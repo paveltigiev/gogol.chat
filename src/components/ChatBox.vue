@@ -1,17 +1,3 @@
-<template>
-  <div class="chat-interface">
-
-    <div v-for="message in messages" :key="message.id">
-      <p v-if="message.isAI">AI: {{ message.content }}</p>
-      <p v-else>User: {{ message.content }}</p>
-    </div>
-
-    <textarea v-model="userMessage" style="width: 100%"></textarea>
-    <button @click="sendMessage">Send</button>
-
-  </div>
-</template>
-
 <script>
 import axios from "axios";
 
@@ -29,7 +15,6 @@ export default {
 
       this.messages.push({ id: Date.now(), content: this.userMessage, isAI: false });
 
-      // Call the API to get AI response
       const response = await axios.post(this.endpoint, {
         model: "gpt-3.5-turbo-instruct",
         prompt: this.userMessage,
@@ -49,3 +34,101 @@ export default {
   },
 };
 </script>
+
+<template>
+  <div class="chat-box">
+
+    <div class="chat-box__messages">
+      <div v-for="message in messages" :key="message.id" class="chat-box__messages-message">
+        <div v-if="message.isAI" class="ai-message">
+          <div class="avatar"></div>
+          <div class="text">{{ message.content }}</div>
+        </div>
+        <div v-else class="user-message">
+          <div class="avatar"></div>
+          <div class="text">{{ message.content }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chat-box__form">
+      <input class="chat-box__form-input" @keyup.enter="sendMessage" v-model="userMessage"/>
+      <button class="chat-box__form-btn btn" @click="sendMessage" >Submit</button>
+    </div>
+
+  </div>
+</template>
+
+<style lang="scss" scoped>
+  .chat-box {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    justify-content: flex-end;
+
+    &__messages {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-height: 600px;
+      max-height: 900px;
+      overflow-y: scroll;
+      justify-content: flex-end;
+
+      &-message {
+
+        .avatar {
+          width: 28px;
+          height: 28px;
+          border-radius: 50%;
+          margin-top: 10px;
+        }
+        .text {
+          border-radius: 8px;
+          padding: 14px;
+          flex: 1;
+        }
+
+        .user-message {
+          display: flex;
+          gap: 8px;
+          .avatar {
+            border: 1px solid var(--color-border);
+          }
+          .text {
+            border: 1px solid var(--color-border);
+          }
+        }
+        .ai-message {
+          display: flex;
+          gap: 8px;
+          .avatar {
+            background: #4A25E1;
+          }
+          .text {
+            background: #fff;
+          }
+        }
+      }
+    }
+    &__form {
+      display: flex;
+      gap: 8px;
+
+      &-input {
+        border: 1px solid var(--color-border);
+        border-radius: 16px;
+        padding: 12px;
+        flex: 1;
+      }
+      &-btn {
+        border: 0;
+        color: #fff;
+        background: #4A25E1;
+        border-radius: 16px;
+        padding: 12px 48px;
+        font-weight: bold;
+      }
+    }
+  }
+</style>
