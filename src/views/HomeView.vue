@@ -1,6 +1,6 @@
 <script setup>
 
-import { ref } from 'vue'
+import { onMounted, ref, computed } from 'vue'
 import ChatBox from '../components/ChatBox.vue'
 
 const dashboard = ref(`
@@ -73,19 +73,48 @@ const dashboard = ref(`
 </div>
 `)
 
+const apiKey = ref('');
+const hasApiKey = computed(() => !!apiKey.value);
+
+onMounted(() => {
+  const storedApiKey = localStorage.getItem("apiKey");
+  if (storedApiKey !== null && storedApiKey !== 'null') {
+    apiKey.value = storedApiKey;
+  } else {
+    login()
+  }
+});
+
+const logout = () => {
+  localStorage.removeItem('apiKey')
+  location.reload()
+}
+
+const login = () => {
+  apiKey.value = prompt("Введите ваш apiKey:");
+  localStorage.setItem("apiKey", apiKey.value);
+  location.reload()
+}
+
 </script>
 
 <template>
   <div class="wrapper">
     <main class="main">
       <div class="main__sidebar">
-        <div class="main__sidebar-header">
-          <div class="main__sidebar-header-logo"></div>
+        <div class="div">
+          <div class="main__sidebar-header">
+            <div class="main__sidebar-header-logo"></div>
+          </div>
+          <div class="main__sidebar-nav">
+            <a href="#">Link to chat</a>
+            <a href="#">Link to chat</a>
+            <a href="#">Link to chat</a>
+          </div>
         </div>
-        <div class="main__sidebar-nav">
-          <a href="#">Link</a>
-          <a href="#">Link</a>
-          <a href="#">Link</a>
+        <div>
+          <div class="logoutBtn" v-if="hasApiKey" @click="logout">Logout</div>
+          <div class="loginBtn" v-else @click="login">Set Api Key</div>
         </div>
       </div>
       <div class="main__dashboard">
@@ -109,6 +138,9 @@ const dashboard = ref(`
     width: 206px;
     border-radius: 10px;
     padding: 10px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 
     &-header {
       padding: 25px;
@@ -135,6 +167,18 @@ const dashboard = ref(`
         &:hover {
           color: #1D275B;
         }
+      }
+    }
+    .logoutBtn,
+    .loginBtn {
+      padding: 25px;
+      color: #3F4773;
+      text-decoration: none;
+      font-weight: bold;
+      cursor: pointer;
+
+      &:hover {
+        color: #1D275B;
       }
     }
   }

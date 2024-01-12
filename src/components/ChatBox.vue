@@ -1,42 +1,52 @@
-<script>
+<script setup lang="ts">
 import axios from "axios";
+import { ref, onMounted, computed } from "vue";
 
-export default {
-  data() {
-    return {
-      messages: [],
-      userMessage: "",
-      apiKey: "sk-xxx",
-      endpoint: "https://api.openai.com/v1/completions",
-    };
-  },
-  methods: {
-    async sendMessage() {
+const messages = ref([]);
+let userMessage = "";
+const apiKey = ref('');
+const endpoint = "https://api.openai.com/v1/completions";
 
-      this.messages.push({ id: Date.now(), content: this.userMessage, isAI: false });
+onMounted(() => {
+  const storedApiKey = localStorage.getItem("apiKey");
+  if (storedApiKey !== null && storedApiKey !== 'null') {
+    apiKey.value = storedApiKey;
+  }
+});
 
-      const response = await axios.post(this.endpoint, {
-        model: "gpt-3.5-turbo-instruct",
-        prompt: this.userMessage,
-        max_tokens: 2024,
-        temperature: 0,
-      }, {
-        headers: {
-          Authorization: `Bearer ${this.apiKey}`,
-        },
-      });
+const hasApiKey = computed(() => !!apiKey.value);
 
-      this.userMessage = "";
+async function sendMessage() {
+  messages.value.push({ id: Date.now(), content: userMessage, isAI: false });
 
-      this.messages.push({ id: Date.now(), content: response.data.choices[0].text.trim(), isAI: true });
-
+  const response = await axios.post(
+    endpoint,
+    {
+      model: "gpt-3.5-turbo-instruct",
+      prompt: userMessage,
+      max_tokens: 2024,
+      temperature: 0,
+      stream: false,
     },
-  },
-};
+    {
+      headers: {
+        Authorization: `Bearer ${apiKey.value}`,
+      },
+    }
+  );
+
+  userMessage = "";
+
+  messages.value.push({
+    id: Date.now(),
+    content: response.data.choices[0].text.trim(),
+    isAI: true,
+  });
+}
 </script>
 
 <template>
-  <div class="chat-box">
+  <div class="chat-box" v-if="hasApiKey">
 
     <div class="chat-box__messages">
       <div v-for="message in messages" :key="message.id" class="chat-box__messages-message">
@@ -76,7 +86,6 @@ export default {
       justify-content: flex-end;
 
       &-message {
-
         .avatar {
           width: 28px;
           height: 28px;
@@ -91,7 +100,7 @@ export default {
 
         .user-message {
           display: flex;
-          gap: 8px;
+          gap: 12px;
           .avatar {
             border: 1px solid var(--color-border);
           }
@@ -101,12 +110,13 @@ export default {
         }
         .ai-message {
           display: flex;
-          gap: 8px;
+          gap: 12px;
           .avatar {
             background: #4A25E1;
           }
           .text {
             background: #fff;
+            box-shadow: 0 0 20px #00000014;
           }
         }
       }
@@ -117,15 +127,21 @@ export default {
 
       &-input {
         border: 1px solid var(--color-border);
-        border-radius: 16px;
+        border-radius: 30px;
         padding: 12px;
         flex: 1;
+        background: transparent;
+        color: var(--color-text);
+
+        &:focus {
+          outline: none;
+        }
       }
       &-btn {
         border: 0;
         color: #fff;
         background: #4A25E1;
-        border-radius: 16px;
+        border-radius: 30px;
         padding: 12px 48px;
         font-weight: bold;
       }
