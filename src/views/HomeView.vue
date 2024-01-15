@@ -3,75 +3,7 @@
 import { onMounted, ref, computed } from 'vue'
 import ChatBox from '../components/ChatBox.vue'
 
-const dashboard = ref(`
-<div class="container mt-5">
-    <!-- First Row -->
-    <div class="row text-center">
-        <div class="col-md-4 mb-3">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Deals Count</h5>
-                    <p class="card-text">10</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4 mb-3">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Deal Total Value</h5>
-                    <p class="card-text">$15,000</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4 mb-3">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Deals Avg</h5>
-                    <p class="card-text">$1,500</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Second Row -->
-    <div class="row">
-        <div class="col-12">
-            <table class="table">
-                <thead>
-                <tr>
-                    <th>Manager Name</th>
-                    <th>Deals Count</th>
-                    <th>Deals Total Value</th>
-                    <th>Average Deal Value</th>
-                </tr>
-                </thead>
-                <tbody>
-                <!-- Repeat this block for each manager -->
-                <tr>
-                    <td>Manager 1</td>
-                    <td>5</td>
-                    <td>$7,500</td>
-                    <td>$1,500</td>
-                </tr>
-                <tr>
-                    <td>Manager 2</td>
-                    <td>3</td>
-                    <td>$4,500</td>
-                    <td>$1,500</td>
-                </tr>
-                <tr>
-                    <td>Manager 3</td>
-                    <td>2</td>
-                    <td>$3,000</td>
-                    <td>$1,500</td>
-                </tr>
-                <!-- End of manager block -->
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-`)
+const dashboard = ref(``)
 
 const apiKey = ref('');
 const hasApiKey = computed(() => !!apiKey.value);

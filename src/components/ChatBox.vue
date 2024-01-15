@@ -1,11 +1,11 @@
-<script setup lang="ts">
-import axios from "axios";
-import { ref, onMounted, computed } from "vue";
+<script setup>
+import { ref, onMounted, computed, reactive } from "vue";
+import OpenAI from "openai";
 
-const messages = ref([]);
-let userMessage = "";
+const messages = reactive([]);
+const userMessage = ref('');
 const apiKey = ref('');
-const endpoint = "https://api.openai.com/v1/completions";
+const loading = ref(false)
 
 onMounted(() => {
   const storedApiKey = localStorage.getItem("apiKey");
@@ -13,57 +13,50 @@ onMounted(() => {
     apiKey.value = storedApiKey;
   }
 });
-
 const hasApiKey = computed(() => !!apiKey.value);
 
+function scrollToBottom() {
+  var messageContainer = document.getElementById("messageContainer");
+  messageContainer.scrollTop = messageContainer.scrollHeight;
+}
+
 async function sendMessage() {
-  messages.value.push({ id: Date.now(), content: userMessage, isAI: false });
-
-  const response = await axios.post(
-    endpoint,
-    {
-      model: "gpt-3.5-turbo-instruct",
-      prompt: userMessage,
-      max_tokens: 2024,
-      temperature: 0,
-      stream: false,
-    },
-    {
-      headers: {
-        Authorization: `Bearer ${apiKey.value}`,
-      },
-    }
-  );
-
-  userMessage = "";
-
-  messages.value.push({
-    id: Date.now(),
-    content: response.data.choices[0].text.trim(),
-    isAI: true,
+  messages.push({ content: userMessage.value, role: 'user' });
+  userMessage.value = "";
+  const openai = new OpenAI({
+    apiKey: apiKey.value,
+    dangerouslyAllowBrowser: true
   });
+  const completion = await openai.chat.completions.create({
+    messages: messages,
+    model: "gpt-3.5-turbo",
+    stream: true
+  })
+
+  messages.push({ content: '', role: 'assistant' });
+  for await (const part of completion) {
+    let line = part.choices[0].delta.content
+    if (line) {
+      messages[messages.length - 1].content += part.choices[0].delta.content
+      scrollToBottom()
+    }
+  }
 }
 </script>
 
 <template>
   <div class="chat-box" v-if="hasApiKey">
 
-    <div class="chat-box__messages">
-      <div v-for="message in messages" :key="message.id" class="chat-box__messages-message">
-        <div v-if="message.isAI" class="ai-message">
-          <div class="avatar"></div>
-          <div class="text">{{ message.content }}</div>
-        </div>
-        <div v-else class="user-message">
-          <div class="avatar"></div>
-          <div class="text">{{ message.content }}</div>
-        </div>
+    <div class="chat-box__messages" id="messageContainer">
+      <div v-for="message in messages" :key="message.id" class="chat-box__messages-message" :class="[message.role == 'user'? 'user-message' : 'assistant-message']">
+        <div class="avatar"></div>
+        <div class="text">{{ message.content }}</div>
       </div>
     </div>
 
     <div class="chat-box__form">
       <input class="chat-box__form-input" @keyup.enter="sendMessage" v-model="userMessage"/>
-      <button class="chat-box__form-btn btn" @click="sendMessage" >Submit</button>
+      <button class="chat-box__form-btn btn" @click="sendMessage" :disabled="loading">Submit</button>
     </div>
 
   </div>
@@ -83,9 +76,10 @@ async function sendMessage() {
       min-height: 600px;
       max-height: 900px;
       overflow-y: scroll;
-      justify-content: flex-end;
 
       &-message {
+        display: flex;
+        gap: 12px;
         .avatar {
           width: 28px;
           height: 28px;
@@ -98,21 +92,21 @@ async function sendMessage() {
           flex: 1;
         }
 
-        .user-message {
-          display: flex;
-          gap: 12px;
+        &.user-message {
           .avatar {
             border: 1px solid var(--color-border);
+            background: url('../assets/img/user.png') center center no-repeat;
+            background-size: 20px;
           }
           .text {
             border: 1px solid var(--color-border);
           }
         }
-        .ai-message {
-          display: flex;
-          gap: 12px;
+        &.assistant-message {
           .avatar {
-            background: #4A25E1;
+            background: #4A25E1 url('../assets/img/openai.svg') center center no-repeat;
+            background-size: 16px;
+            fill: #fff;
           }
           .text {
             background: #fff;
