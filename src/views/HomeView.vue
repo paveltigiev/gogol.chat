@@ -1,21 +1,33 @@
 <script setup>
-
-import { onMounted, ref, computed } from 'vue'
+import axios from 'axios'
+import { onMounted, onUnmounted, ref, computed } from 'vue'
 import ChatBox from '../components/ChatBox.vue'
 
-const dashboard = ref(``)
-
-const apiKey = ref('');
-const hasApiKey = computed(() => !!apiKey.value);
+const htmlCode = ref()
+const apiKey = ref()
+const hasApiKey = computed(() => !!apiKey.value)
+const getHTMLInterval = ref()
 
 onMounted(() => {
   const storedApiKey = localStorage.getItem("apiKey");
   if (storedApiKey !== null && storedApiKey !== 'null') {
-    apiKey.value = storedApiKey;
+    apiKey.value = storedApiKey
   } else {
     login()
   }
-});
+  getHTMLInterval.value = setInterval(() => {
+    getHTML()
+  }, 5000)
+})
+
+onUnmounted(() => {
+  clearInterval(getHTMLInterval.value)
+})
+
+const getHTML = async () => {
+  const responce = await axios.get(`${import.meta.env.VITE_BASE_URL}/adaptive-ui/html`)
+  htmlCode.value = responce.data
+}
 
 const logout = () => {
   localStorage.removeItem('apiKey')
@@ -23,11 +35,10 @@ const logout = () => {
 }
 
 const login = () => {
-  apiKey.value = prompt("Введите ваш apiKey:");
-  localStorage.setItem("apiKey", apiKey.value);
+  apiKey.value = prompt("Введите ваш apiKey:")
+  localStorage.setItem("apiKey", apiKey.value)
   location.reload()
 }
-
 </script>
 
 <template>
@@ -50,7 +61,7 @@ const login = () => {
         </div>
       </div>
       <div class="main__dashboard">
-        <div class="data" v-html="dashboard"></div>
+        <div class="data" v-html="htmlCode"></div>
       </div>
       <div class="main__chat">
         <chat-box />

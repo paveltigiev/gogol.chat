@@ -1,32 +1,35 @@
 <script setup>
-import { ref, onMounted, computed, reactive } from "vue";
-import OpenAI from "openai";
+import { ref, onMounted, computed, reactive } from "vue"
+import OpenAI from "openai"
 
-const messages = reactive([]);
-const userMessage = ref('');
-const apiKey = ref('');
+const messages = reactive([])
+const userMessage = ref('')
+const apiKey = ref('')
 const loading = ref(false)
 
 onMounted(() => {
-  const storedApiKey = localStorage.getItem("apiKey");
+  const storedApiKey = localStorage.getItem("apiKey")
   if (storedApiKey !== null && storedApiKey !== 'null') {
-    apiKey.value = storedApiKey;
+    apiKey.value = storedApiKey
   }
-});
-const hasApiKey = computed(() => !!apiKey.value);
+})
+const hasApiKey = computed(() => !!apiKey.value)
 
 function scrollToBottom() {
-  var messageContainer = document.getElementById("messageContainer");
-  messageContainer.scrollTop = messageContainer.scrollHeight;
+  var messageContainer = document.getElementById("messageContainer")
+  messageContainer.scrollTop = messageContainer.scrollHeight
 }
 
 async function sendMessage() {
-  messages.push({ content: userMessage.value, role: 'user' });
-  userMessage.value = "";
+  messages.push({ content: userMessage.value, role: 'user' })
+  userMessage.value = ""
+
   const openai = new OpenAI({
+    baseURL: import.meta.env.VITE_BASE_URL + '/v1',
     apiKey: apiKey.value,
     dangerouslyAllowBrowser: true
-  });
+  })
+
   const completion = await openai.chat.completions.create({
     messages: messages,
     model: "gpt-3.5-turbo",
@@ -34,6 +37,7 @@ async function sendMessage() {
   })
 
   messages.push({ content: '', role: 'assistant' });
+
   for await (const part of completion) {
     let line = part.choices[0].delta.content
     if (line) {
