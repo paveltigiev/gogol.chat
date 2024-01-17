@@ -19,18 +19,21 @@ const code = computed(() => dashboardStore.code)
             <div class="main__sidebar-header-logo"></div>
           </div>
           <div class="main__sidebar-nav">
-            <a href="#">Link to chat</a>
+            <a href="#" class="active">Link to chat</a>
             <a href="#">Link to chat</a>
             <a href="#">Link to chat</a>
           </div>
         </div>
         <div>
-          <div class="logoutBtn">Logout</div>
+          <div class="userBtn">
+            <div class="userBtn__img"></div>
+            <div class="userBtn__name">Inocentii</div>
+          </div>
         </div>
       </div>
       <div class="main__dashboard">
         <div class="data" v-html="code" v-if="!commonsStore.loading"></div>
-        <div v-else>Loading...</div>
+        <div class="loading" v-else></div>
       </div>
       <div class="main__chat">
         <chat-box />
@@ -40,66 +43,102 @@ const code = computed(() => dashboardStore.code)
 </template>
 
 <style lang="scss" scoped>
+.card {
+  background: red !important;
+}
 .main {
   display: flex;
   justify-content: space-between;
-  gap: 36px;
+  gap: 16px;
 
   &__sidebar {
-    background: #fff;
-    width: 206px;
-    border-radius: 10px;
-    padding: 10px 0;
+    background: var(--color-background-sidebar);
+    width: 260px;
+    padding: .875rem .75rem .75rem;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    height: 100vh;
 
     &-header {
-      padding: 25px;
-      border-bottom: 1px solid var(--color-border);
-
       &-logo {
-        width: 116px;
-        height: 13px;
-        background: url('../assets/img/logo.png') 0 0 no-repeat;
+        width: 100%;
+        height: 40px;
+        background: url('../assets/img/logo.svg') 0 0 no-repeat;
         background-size: contain;
       }
     }
     &-nav {
       display: flex;
       flex-direction: column;
-      padding: 25px;
-      gap: 20px;
+      margin-top: 1.25rem;
 
       a {
-        color: #3F4773;
+        align-items: center;
+        display: flex;
+        gap: .5rem;
+        padding: .5rem;
         text-decoration: none;
-        font-weight: bold;
+        border-radius: .5rem;
+        font-size: .875rem;
+        line-height: 1.25rem;
+
+        &.active {
+          background: var(--color-background);
+          &:hover {
+            background: var(--color-background);
+          }
+        }
 
         &:hover {
-          color: #1D275B;
+          background: #020203;
         }
       }
     }
-    .logoutBtn,
-    .loginBtn {
-      padding: 25px;
-      color: #3F4773;
+    .userBtn {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      padding: .5rem;
       text-decoration: none;
-      font-weight: bold;
+      border-radius: .5rem;
+      text-decoration: none;
       cursor: pointer;
+      gap: 8px;
+
+      &__img {
+        width: 32px;
+        height: 32px;
+        background: #fff;
+        border-radius: 50%;
+      }
+      &__text {
+        font-size: .875rem;
+        line-height: 1.25rem;
+      }
 
       &:hover {
-        color: #1D275B;
+        background: #020203;
       }
     }
   }
   &__dashboard {
-    width: auto;
     flex: 1;
+    padding: 1.5rem 0;
+    height: 100vh;
+
+    .loading {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      background: url(../../public/loading.gif) center center no-repeat;
+      background-size: 64px;
+    }
   }
   &__chat {
-    width: 540px;
+    flex: 1;
+    padding: 1.5rem 1.5rem 1.5rem 0;
+    height: 100vh;
   }
 }
 </style>

@@ -1,7 +1,28 @@
 @import './base.css';
 
 .wrapper {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 20px 12px;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.container.mt-5 {
+  margin-top: 0 !important;
+}
+
+.card {
+  background: #2d2d31 !important;
+  color: #fff;
+}
+.table {
+  --bs-table-bg: #2d2d31;
+  --bs-table-border-color: var(--color-background);
+  --bs-table-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.bg-light {
+  background: #2d2d31 !important;
 }
