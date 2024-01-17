@@ -1,34 +1,30 @@
 <script setup>
 import { ref, onMounted, computed, reactive } from "vue"
 import OpenAI from "openai"
+import { useDashboardStore } from '../stores/dashboard'
+import { useCommonsStore } from '../stores/commons'
 
+const dashboardStore = useDashboardStore()
+const commonsStore = useCommonsStore()
 const messages = reactive([])
 const userMessage = ref('')
-const apiKey = ref('')
 const loading = ref(false)
-
-onMounted(() => {
-  const storedApiKey = localStorage.getItem("apiKey")
-  if (storedApiKey !== null && storedApiKey !== 'null') {
-    apiKey.value = storedApiKey
-  }
-})
-const hasApiKey = computed(() => !!apiKey.value)
 
 function scrollToBottom() {
   var messageContainer = document.getElementById("messageContainer")
   messageContainer.scrollTop = messageContainer.scrollHeight
 }
 
+const openai = new OpenAI({
+  baseURL: import.meta.env.VITE_BASE_URL + '/v1',
+  apiKey: '',
+  dangerouslyAllowBrowser: true
+})
+
 async function sendMessage() {
   messages.push({ content: userMessage.value, role: 'user' })
   userMessage.value = ""
-
-  const openai = new OpenAI({
-    baseURL: import.meta.env.VITE_BASE_URL + '/v1',
-    apiKey: apiKey.value,
-    dangerouslyAllowBrowser: true
-  })
+  commonsStore.loading = true
 
   const completion = await openai.chat.completions.create({
     messages: messages,
@@ -45,11 +41,13 @@ async function sendMessage() {
       scrollToBottom()
     }
   }
+  commonsStore.loading = false
+  dashboardStore.setDashboard()
 }
 </script>
 
 <template>
-  <div class="chat-box" v-if="hasApiKey">
+  <div class="chat-box">
 
     <div class="chat-box__messages" id="messageContainer">
       <div v-for="message in messages" :key="message.id" class="chat-box__messages-message" :class="[message.role == 'user'? 'user-message' : 'assistant-message']">
@@ -60,7 +58,7 @@ async function sendMessage() {
 
     <div class="chat-box__form">
       <input class="chat-box__form-input" @keyup.enter="sendMessage" v-model="userMessage"/>
-      <button class="chat-box__form-btn btn" @click="sendMessage" :disabled="loading">Submit</button>
+      <button class="chat-box__form-btn btn" @click="sendMessage" :disabled="commonsStore.loading">Submit</button>
     </div>
 
   </div>
@@ -77,8 +75,8 @@ async function sendMessage() {
       display: flex;
       flex-direction: column;
       gap: 10px;
-      min-height: 600px;
-      max-height: 900px;
+      // min-height: 600px;
+      // max-height: 900px;
       overflow-y: scroll;
 
       &-message {

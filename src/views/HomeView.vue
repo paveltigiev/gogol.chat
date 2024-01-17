@@ -1,44 +1,13 @@
 <script setup>
-import axios from 'axios'
-import { onMounted, onUnmounted, ref, computed } from 'vue'
 import ChatBox from '../components/ChatBox.vue'
+import { useDashboardStore } from '../stores/dashboard'
+import { useCommonsStore } from '../stores/commons'
+import { computed } from 'vue'
 
-const htmlCode = ref()
-const apiKey = ref()
-const hasApiKey = computed(() => !!apiKey.value)
-const getHTMLInterval = ref()
+const dashboardStore = useDashboardStore()
+const commonsStore = useCommonsStore()
 
-onMounted(() => {
-  const storedApiKey = localStorage.getItem("apiKey");
-  if (storedApiKey !== null && storedApiKey !== 'null') {
-    apiKey.value = storedApiKey
-  } else {
-    login()
-  }
-  getHTMLInterval.value = setInterval(() => {
-    getHTML()
-  }, 5000)
-})
-
-onUnmounted(() => {
-  clearInterval(getHTMLInterval.value)
-})
-
-const getHTML = async () => {
-  const responce = await axios.get(`${import.meta.env.VITE_BASE_URL}/adaptive-ui/html`)
-  htmlCode.value = responce.data
-}
-
-const logout = () => {
-  localStorage.removeItem('apiKey')
-  location.reload()
-}
-
-const login = () => {
-  apiKey.value = prompt("Введите ваш apiKey:")
-  localStorage.setItem("apiKey", apiKey.value)
-  location.reload()
-}
+const code = computed(() => dashboardStore.code)
 </script>
 
 <template>
@@ -56,12 +25,12 @@ const login = () => {
           </div>
         </div>
         <div>
-          <div class="logoutBtn" v-if="hasApiKey" @click="logout">Logout</div>
-          <div class="loginBtn" v-else @click="login">Set Api Key</div>
+          <div class="logoutBtn">Logout</div>
         </div>
       </div>
       <div class="main__dashboard">
-        <div class="data" v-html="htmlCode"></div>
+        <div class="data" v-html="code" v-if="!commonsStore.loading"></div>
+        <div v-else>Loading...</div>
       </div>
       <div class="main__chat">
         <chat-box />
@@ -127,6 +96,7 @@ const login = () => {
   }
   &__dashboard {
     width: auto;
+    flex: 1;
   }
   &__chat {
     width: 540px;
