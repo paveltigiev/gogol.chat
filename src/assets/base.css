@@ -1,15 +1,14 @@
 :root {
-  --color-background: #19191B;
+  --color-background: #F3F7FF;
   --color-background-sidebar: #000;
-  --color-border: #020203;
-  --color-heading: #fff;
-  --color-text: #fff;
+  --color-border: #ADADAE;
+  --color-heading: #000;
+  --color-text: #000;
 }
 
 ::-webkit-scrollbar-thumb {
-  --tw-border-opacity: 1;
   background-color: hsla(0,0%,100%,.1);
-  border-color: rgba(255,255,255);
+  border-color: rgba(000);
   border-radius: 9999px;
   border-width: 1px;
 }

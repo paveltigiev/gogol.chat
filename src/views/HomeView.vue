@@ -1,13 +1,5 @@
 <script setup>
 import ChatBox from '../components/ChatBox.vue'
-import { useDashboardStore } from '../stores/dashboard'
-import { useCommonsStore } from '../stores/commons'
-import { computed } from 'vue'
-
-const dashboardStore = useDashboardStore()
-const commonsStore = useCommonsStore()
-
-const code = computed(() => dashboardStore.code)
 </script>
 
 <template>
@@ -31,10 +23,6 @@ const code = computed(() => dashboardStore.code)
           </div>
         </div>
       </div>
-      <div class="main__dashboard">
-        <div class="data" v-html="code" v-if="!commonsStore.loading"></div>
-        <div class="loading" v-else></div>
-      </div>
       <div class="main__chat">
         <chat-box />
       </div>
@@ -43,9 +31,6 @@ const code = computed(() => dashboardStore.code)
 </template>
 
 <style lang="scss" scoped>
-.card {
-  background: red !important;
-}
 .main {
   display: flex;
   justify-content: space-between;
@@ -82,16 +67,17 @@ const code = computed(() => dashboardStore.code)
         border-radius: .5rem;
         font-size: .875rem;
         line-height: 1.25rem;
+        color: #fff;
 
         &.active {
-          background: var(--color-background);
+          background: #19191B;
           &:hover {
-            background: var(--color-background);
+            background: #19191B;
           }
         }
 
         &:hover {
-          background: #020203;
+          background: hwb(240 4% 96%);
         }
       }
     }
@@ -105,6 +91,7 @@ const code = computed(() => dashboardStore.code)
       text-decoration: none;
       cursor: pointer;
       gap: 8px;
+      color: #fff;
 
       &__img {
         width: 32px;
@@ -118,26 +105,13 @@ const code = computed(() => dashboardStore.code)
       }
 
       &:hover {
-        background: #020203;
+        background: hwb(240 4% 96%);
       }
-    }
-  }
-  &__dashboard {
-    flex: 1;
-    padding: 1.5rem 0;
-    height: 100vh;
-
-    .loading {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      background: url(../../public/loading.gif) center center no-repeat;
-      background-size: 64px;
     }
   }
   &__chat {
     flex: 1;
-    padding: 1.5rem 1.5rem 1.5rem 0;
+    padding:3rem 3rem 3rem 1.5rem;
     height: 100vh;
   }
 }
