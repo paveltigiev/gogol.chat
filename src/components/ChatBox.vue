@@ -124,7 +124,7 @@ async function sendMessage() {
     flex-direction: column;
     justify-content: flex-end;
     gap: 20px;
-    height: calc(100vh - 32px - 1.5rem);
+    height: calc(100vh - 56px);
 
     &__data {
       display: flex;
@@ -134,14 +134,14 @@ async function sendMessage() {
         position: relative;
         flex: 1;
         overflow-y: scroll;
-        // max-height: calc(100vh - 132px - 1.5rem);
+        // max-height: calc(100vh - 156px);
 
         &--data {
-          max-height: calc(100vh - 132px - 1.5rem);
+          max-height: calc(100vh - 156px);
         }
 
         &--sceleton {
-          height: calc(100vh - 294px - 1.5rem);
+          height: calc(100vh - 318px);
           overflow: hidden;
 
           img {
@@ -161,7 +161,7 @@ async function sendMessage() {
         display: flex;
         flex-direction: column;
         gap: 10px;
-        height: calc(100vh - 132px - 1.5rem);
+        height: calc(100vh - 156px);
         overflow-y: scroll;
         flex: 1;
 
@@ -299,6 +299,26 @@ async function sendMessage() {
       font-size: 2rem;
       font-weight: 700;
       text-align: center;
+    }
+  }
+
+  @media screen and (max-width: 1024px) {
+    .chat-box {
+      height: calc(100vh - 26px);
+      &__data {
+        flex-direction: column;
+        height: calc(100vh - 75px);
+
+        &-dashboard {
+          &--sceleton {
+            display: none;
+          }
+        }
+
+        &-messages {
+          min-height: calc(50vh);
+        }
+      }
     }
   }
 </style>
