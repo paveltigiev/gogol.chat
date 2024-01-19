@@ -3,6 +3,8 @@ import OpenAI from "openai"
 import { ref, computed, reactive } from "vue"
 import { useDashboardStore } from '../stores/dashboard'
 import { useCommonsStore } from '../stores/commons'
+import MarkdownIt from "markdown-it"
+const md = new MarkdownIt()
 
 const dashboardStore = useDashboardStore()
 const commonsStore = useCommonsStore()
@@ -12,6 +14,10 @@ const userMessage = ref('')
 
 const code = computed(() => dashboardStore.code)
 const loading = computed(() => commonsStore.loading)
+
+const renderMarkdown = (text) => {
+  return md.render(text)
+}
 
 function scrollToBottom() {
   var messageContainer = document.getElementById("messageContainer")
@@ -75,7 +81,7 @@ async function sendMessage() {
           <div class="avatar"></div>
           <div class="content">
             <div class="user-name">{{ message.role == 'user'? 'You' : 'Gogol.chat' }}</div>
-            <div class="text">{{ message.content }}</div>
+            <div class="text" v-html="renderMarkdown(message.content)"></div>
           </div>
         </div>
       </div>
