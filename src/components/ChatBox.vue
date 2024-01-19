@@ -160,7 +160,7 @@ async function sendMessage() {
       &-messages {
         display: flex;
         flex-direction: column;
-        gap: 10px;
+        gap: 45px;
         height: calc(100vh - 156px);
         overflow-y: scroll;
         flex: 1;
@@ -174,18 +174,22 @@ async function sendMessage() {
             height: 24px;
             border-radius: 50%;
             margin-top: .125rem;
-            border: 1px solid var(--color-border);
+            // border: 1px solid var(--color-border);
           }
           .content {
             flex: 1;
             .user-name {
               font-weight: 600;
             }
+            .text {
+              letter-spacing: -0.01rem;
+              line-height: 1.7rem;
+            }
           }
 
           &.user-message {
             .avatar {
-              background: #3D4A5D url('../assets/img/user.svg') center center no-repeat;
+              background: #B22F5B url('../assets/img/user.svg') center center no-repeat;
               background-size: 10px;
             }
           }
@@ -193,6 +197,9 @@ async function sendMessage() {
             .avatar {
               background: #000 url('../assets/img/ai.png') center center no-repeat;
               background-size: 20px;
+            }
+            .text {
+              color: #374151;
             }
           }
         }

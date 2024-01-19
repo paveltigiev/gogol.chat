@@ -28,9 +28,9 @@ const toggleSidebar = () => {
             <div class="main__sidebar-header-logo"></div>
           </div>
           <div class="main__sidebar-nav">
-            <a href="#" class="active">Link to chat</a>
-            <a href="#">Link to chat</a>
-            <a href="#">Link to chat</a>
+            <a href="#" class="active">Chat with Pipedrive CRM</a>
+            <a href="#">Shopify analytics chat</a>
+            <a href="#">Chat wit marketing bot</a>
           </div>
         </div>
         <div>
@@ -76,6 +76,7 @@ const toggleSidebar = () => {
         height: 40px;
         background: url('../assets/img/logo.svg') 0 0 no-repeat;
         background-size: contain;
+        margin-left: 0.5rem;
       }
     }
     &-nav {
@@ -121,8 +122,9 @@ const toggleSidebar = () => {
       &__img {
         width: 32px;
         height: 32px;
-        background: #fff;
+        background: #B22F5B url("/src/assets/img/user.svg") center center no-repeat;
         border-radius: 50%;
+        background-size: 14px;
       }
       &__text {
         font-size: .875rem;
