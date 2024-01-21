@@ -15,9 +15,7 @@ const userMessage = ref('')
 const code = computed(() => dashboardStore.code)
 const loading = computed(() => commonsStore.loading)
 
-const renderMarkdown = (text) => {
-  return md.render(text)
-}
+const renderMarkdown = text => md.render(text)
 
 function scrollToBottom() {
   var messageContainer = document.getElementById("messageContainer")
