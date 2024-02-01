@@ -261,7 +261,7 @@ async function sendMessage() {
     }
     &__recomendations {
       display: grid;
-      grid-template-columns: 50% 50%;
+      grid-template-columns: 1fr 1fr;
       gap: 8px;
       padding: 0 0.5rem;
 
