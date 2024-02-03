@@ -1,42 +1,15 @@
 <script setup>
-import { ref } from 'vue'
-import { supabase } from '../supabase'
+  import { computed, ref } from 'vue'
+  import { useAuthStore } from '../stores/auth'
+  import { useCommonsStore } from '../stores/commons'
+  const authStore = useAuthStore()
+  const commonsStore = useCommonsStore()
 
-const loading = ref(false)
-const email = ref('')
+  const loading = computed(() => commonsStore.loading)
+  const email = ref('')
 
-const handleLogin = async () => {
-  try {
-    loading.value = true
-    const { error } = await supabase.auth.signInWithOtp({
-      email: email.value,
-    })
-    if (error) throw error
-    alert('Check your email for the login link!')
-  } catch (error) {
-    if (error instanceof Error) {
-      alert(error.message)
-    }
-  } finally {
-    loading.value = false
-  }
-}
-
-const handleLoginWithGoogle = async () => {
-  try {
-    loading.value = true
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: 'google'
-    })
-    if (error) throw error
-  } catch (error) {
-    if (error instanceof Error) {
-      alert(error.message)
-    }
-  } finally {
-    loading.value = false
-  }
-}
+  const handleLogin = async () => authStore.loginWithEmailAndSetUser(email.value)
+  const handleLoginWithGoogle = async () => authStore.loginWithGoogleAndSetUser()
 </script>
 
 <template>

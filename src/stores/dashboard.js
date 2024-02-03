@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import { getDashboard } from '../api/dashboard.js'
+import { getDashboard } from '../api/dashboardService.js'
 
 export const useDashboardStore = defineStore('dashboard', () => {
   const code = ref('')
