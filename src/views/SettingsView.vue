@@ -14,8 +14,8 @@
         </thead>
         <tbody>
           <tr v-for="connection in connections" :key="connection.id">
-            <td class="" :title="connection.name">{{ connection.name }}</td>
-            <td class="" :title="connection.name">{{ connection.id }}</td>
+            <td :title="connection.name">{{ connection.name }}</td>
+            <td :title="connection.name">{{ connection.id }}</td>
           </tr>
         </tbody>
       </table>
@@ -31,10 +31,10 @@
         </thead>
         <tbody>
           <tr v-for="intergration in intergrations" :key="intergration.id">
-            <td class="" :title="intergration.name">{{ intergration.name }}</td>
-            <td class="" :title="intergration.name">{{ intergration.params['API key'] }}</td>
-            <td class="" :title="intergration.name">{{ intergration.params.Domain }}</td>
-            <td class="" :title="intergration.name">{{ intergration.id }}</td>
+            <td :title="intergration.name">{{ intergration.name }}</td>
+            <td :title="intergration.name">{{ intergration.params['API key'] }}</td>
+            <td :title="intergration.name">{{ intergration.params.Domain }}</td>
+            <td :title="intergration.name">{{ intergration.id }}</td>
           </tr>
         </tbody>
       </table>
@@ -48,8 +48,28 @@
         </thead>
         <tbody>
           <tr v-for="agent in agents" :key="agent.id">
-            <td class="" :title="agent.name">{{ agent.name }}</td>
-            <td class="" :title="agent.name">{{ agent.id }}</td>
+            <td :title="agent.name">{{ agent.name }}</td>
+            <td :title="agent.name">{{ agent.id }}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Billing</h3>
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>From</th>
+            <th>To</th>
+            <th>Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="trx in transactions" :key="trx.id">
+            <td :title="trax.created_at">{{ trax.created_at }}</td>
+            <td :title="trax.created_at">{{ trax.from }}</td>
+            <td :title="trax.created_at">{{ trax.to }}</td>
+            <td :title="trax.created_at">{{ trax.amount }}</td>
           </tr>
         </tbody>
       </table>
@@ -66,11 +86,13 @@
   const agents = computed(() => settingsStore.agents)
   const connections = computed(() => settingsStore.connections)
   const intergrations = computed(() => settingsStore.intergrations)
+  const transactions = computed(() => settingsStore.transactions)
 
   onMounted(() => {
     settingsStore.setAgents()
     settingsStore.setConnections()
     settingsStore.setIntergrations()
+    settingsStore.setTransactions()
   })
 
 </script>

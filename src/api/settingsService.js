@@ -43,3 +43,14 @@ export async function getIntergrations() {
     // commonsStore.loading = false
   }
 }
+
+export async function getTransactions() {
+  try {
+    const { data: transactions } = await supabase
+      .from('transactions')
+      .select('*')
+    return transactions
+  } catch(error) {
+    console.error(error)
+  }
+}
