@@ -79,7 +79,7 @@
 
 <script setup>
   import { computed, onMounted } from 'vue'
-  import { useSettingsStore } from '../stores/settings'
+  import { useSettingsStore } from '../stores/settingsModule'
 
   const settingsStore = useSettingsStore()
 

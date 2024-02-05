@@ -1,19 +1,30 @@
 <script setup>
-  import OpenAI from "openai"
-  import { ref, computed, reactive } from "vue"
+  import { ref, computed, reactive, onMounted, watch } from "vue"
+  import { useSettingsStore } from '../stores/settingsModule'
   import { useDashboardStore } from '../stores/dashboard'
+  import { useChatsStore } from '../stores/chatsModule'
   import { useCommonsStore } from '../stores/commons'
+  import { useUserStore } from '../stores/user'
   import MarkdownIt from "markdown-it"
+  import OpenAI from "openai"
+
   const md = new MarkdownIt()
 
   const dashboardStore = useDashboardStore()
+  const settingsStore = useSettingsStore()
   const commonsStore = useCommonsStore()
+  const chatsStore = useChatsStore()
+  const userStore = useUserStore()
 
-  const messages = reactive([])
+  const agentMenuOpen = ref(false)
   const userMessage = ref('')
+  const messages = ref([])
 
-  const code = computed(() => dashboardStore.code)
   const loading = computed(() => commonsStore.loading)
+  const agents = computed(() => settingsStore.agents)
+  const agent = computed(() => settingsStore.agent)
+  const code = computed(() => dashboardStore.code)
+  const chat = computed(() => chatsStore.chat)
 
   const renderMarkdown = text => md.render(text)
 
@@ -22,12 +33,6 @@
     messageContainer.scrollTop = messageContainer.scrollHeight
   }
 
-  const openai = new OpenAI({
-    baseURL: import.meta.env.VITE_BASE_URL + '/v1',
-    apiKey: '',
-    dangerouslyAllowBrowser: true
-  })
-
   function sendRecomendation(message) {
     userMessage.value = message
     sendMessage()
@@ -35,9 +40,24 @@
 
   async function sendMessage() {
     if (!loading.value && !!userMessage.value) {
-      messages.push({ content: userMessage.value, role: 'user' })
+      messages.value.push({ content: userMessage.value, role: 'user' })
       userMessage.value = ""
+
+      if (await !chat.value) {
+        await chatsStore.addChat(userStore.user.user_id, agent.value.id, messages.value)
+        console.log(chat.value)
+        // return null
+      }
+
+      const url = `${agent.value.url}${chat.value.id}`
+
       commonsStore.loading = true
+
+      const openai = new OpenAI({
+        baseURL: url,
+        dangerouslyAllowBrowser: true,
+        apiKey: ''
+      })
 
       const completion = await openai.chat.completions.create({
         messages: messages,
@@ -45,7 +65,7 @@
         stream: true
       })
 
-      messages.push({ content: '', role: 'assistant' });
+      messages.value.push({ content: '', role: 'assistant' });
 
       for await (const part of completion) {
         let line = part.choices[0].delta.content
@@ -55,13 +75,50 @@
         }
       }
       commonsStore.loading = false
-      dashboardStore.setDashboard()
+      dashboardStore.setDashboard(url)
     }
   }
+
+  const changeAgent = (id) => {
+    agentMenuOpen.value = false
+    settingsStore.setAgent(id)
+  }
+
+  watch(chat, async (newChat) => {
+    if (newChat) {
+      settingsStore.setAgent(newChat.agent_id)
+      messages.value = newChat.chat
+    } else {
+      settingsStore.agent = agents.value[0]
+      messages.value = []
+    }
+    userMessage.value = ''
+  })
+
+  onMounted( async () => {
+    await settingsStore.setAgents()
+    settingsStore.agent = agents.value[0]
+  })
 </script>
 
 <template>
   <div class="chat-box">
+    <div class="dropDownMenu" @click="agentMenuOpen = messages.length > 0? agentMenuOpen : !agentMenuOpen">
+      <div>{{ agent?.name || 'loading' }} <span class="text-token-text-secondary">Amo CRM</span></div>
+      <svg width="16" height="17" viewBox="0 0 16 17" fill="none" class="text-token-text-tertiary" v-if="messages.length <= 0"><path d="M11.3346 7.83203L8.00131 11.1654L4.66797 7.83203" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+    </div>
+    <div class="dropDownMenu__items" v-if="agentMenuOpen">
+      <div class="dropDownMenu__items-item" v-for="agnt in agents" :key="agnt.id" @click="changeAgent(agnt.id)">
+        <div class="dropDownMenu__items-item--text">
+          {{ agnt.name }}
+          <span>Amo CRM</span>
+        </div>
+        <div class="dropDownMenu__items-item--selector">
+          <svg v-if="agent.id == agnt.id" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" class="icon-md flex-shrink-0 block group-hover:hidden"><path fill-rule="evenodd" clip-rule="evenodd" d="M0 10C0 4.47715 4.47715 0 10 0C15.5228 0 20 4.47715 20 10C20 15.5228 15.5228 20 10 20C4.47715 20 0 15.5228 0 10ZM14.0755 5.93219C14.5272 6.25003 14.6356 6.87383 14.3178 7.32549L9.56781 14.0755C9.39314 14.3237 9.11519 14.4792 8.81226 14.4981C8.50934 14.517 8.21422 14.3973 8.01006 14.1727L5.51006 11.4227C5.13855 11.014 5.16867 10.3816 5.57733 10.0101C5.98598 9.63855 6.61843 9.66867 6.98994 10.0773L8.65042 11.9039L12.6822 6.17451C13 5.72284 13.6238 5.61436 14.0755 5.93219Z" fill="currentColor"></path></svg>
+          <svg v-else width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" class="icon-md flex-shrink-0"><path fill-rule="evenodd" clip-rule="evenodd" d="M10 2C5.58172 2 2 5.58172 2 10C2 14.4183 5.58172 18 10 18C14.4183 18 18 14.4183 18 10C18 5.58172 14.4183 2 10 2ZM0 10C0 4.47715 4.47715 0 10 0C15.5228 0 20 4.47715 20 10C20 15.5228 15.5228 20 10 20C4.47715 20 0 15.5228 0 10Z" fill="currentColor" opacity="0.16"></path></svg>
+        </div>
+      </div>
+    </div>
 
     <div class="chat-box__data">
 
@@ -123,12 +180,82 @@
 
 <style lang="scss" scoped>
   .chat-box {
+    position: relative;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
     gap: 20px;
     height: calc(100vh - 56px);
-    margin: 3rem 3rem 0 3rem;
+    margin: 3rem 1.5rem 0;
+
+    .dropDownMenu {
+      position: absolute;
+      top: -46px;
+      left: 0;
+      z-index: 2;
+      font-weight: 500;
+      font-size: 1.125rem;
+      line-height: 1.75rem;
+      padding: .5rem .75rem .5rem;
+      gap: .25rem;
+      align-items: center;
+      cursor: pointer;
+      display: flex;
+      border-radius: 12px;
+
+      span {
+        color: #666;
+      }
+
+      &:hover {
+        background-color: #ebeff6;
+      }
+    }
+    .dropDownMenu__items {
+      position: absolute;
+      left: 0px;
+      top: 0px;
+      transform: translate(0, -10px);
+      min-width: max-content;
+      will-change: transform;
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1),0 4px 6px -4px rgba(0,0,0,0.1);
+      background-color: #fff;
+      border-color: rgba(236,236,241,1);
+      border-radius: .5rem;
+      max-width: 20rem;
+      margin-top: .5rem;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+
+      &-item {
+        font-size: .875rem;
+        line-height: 1.25rem;
+        padding-right: .75rem!important;
+        padding: .625rem;
+        border-radius: .25rem;
+        gap: 2.5rem;
+        cursor: pointer;
+        display: flex;
+        margin: .375rem;
+        justify-content: space-between;
+        align-items: center;
+        flex-grow: 1;
+
+        &--text {
+          display: flex;
+          flex-direction: column;
+
+          span {
+            color: #999;
+          }
+        }
+
+        &:hover {
+          background-color: rgba(0,0,0,.05);
+        }
+      }
+    }
 
     &__data {
       display: flex;

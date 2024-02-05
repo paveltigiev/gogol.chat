@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-export async function getDashboard() {
-  const responce = await axios.get(`${import.meta.env.VITE_BASE_URL}/adaptive-ui/html`)
+export async function getDashboard(url) {
+  const responce = await axios.get(`${url}/adaptive-ui/html`)
   return responce.data
 }

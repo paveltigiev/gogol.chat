@@ -1,23 +1,35 @@
 <script setup>
-  import { ref, computed } from 'vue';
+  import { ref, computed, onMounted } from 'vue';
+  import { useChatsStore } from '../stores/chatsModule'
   import { useCommonsStore } from '../stores/commons'
   import { useUserStore } from '../stores/user'
   import { useAuthStore } from '../stores/auth'
 
   const commonsStore = useCommonsStore()
+  const chatsStore = useChatsStore()
   const userStore = useUserStore()
   const authStore = useAuthStore()
+
   const overlay = computed(() => commonsStore.overlay)
+  const chats = computed(() => chatsStore.chats )
+  const chat = computed(() => chatsStore.chat )
   const user = computed(() => userStore.user )
-  const sidebarOpened = ref(false)
+
   const userMenuOpened = ref(false)
+  const sidebarOpened = ref(false)
 
   const toggleSidebar = () => {
     sidebarOpened.value = !sidebarOpened.value
     commonsStore.overlay = !overlay.value
   }
 
+  const changeChat = (id) => chatsStore.setChat(id)
+  const newChat = () => chatsStore.chat = null
   const logout = () => authStore.setLogout()
+
+  onMounted(() => {
+    chatsStore.setChats()
+  })
 </script>
 
 <template>
@@ -32,12 +44,21 @@
         </div>
         <div class="main__sidebar-nav--container">
           <div class="main__sidebar-header">
-            <div class="main__sidebar-header-logo"></div>
+            <router-link to="/chat" class="main__sidebar-header-logo" />
+            <button class="main__sidebar-header-newChatBtn">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="icon-md" @click="newChat"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.7929 2.79289C18.0118 1.57394 19.9882 1.57394 21.2071 2.79289C22.4261 4.01184 22.4261 5.98815 21.2071 7.20711L12.7071 15.7071C12.5196 15.8946 12.2652 16 12 16H9C8.44772 16 8 15.5523 8 15V12C8 11.7348 8.10536 11.4804 8.29289 11.2929L16.7929 2.79289ZM19.7929 4.20711C19.355 3.7692 18.645 3.7692 18.2071 4.2071L10 12.4142V14H11.5858L19.7929 5.79289C20.2308 5.35499 20.2308 4.64501 19.7929 4.20711ZM6 5C5.44772 5 5 5.44771 5 6V18C5 18.5523 5.44772 19 6 19H18C18.5523 19 19 18.5523 19 18V14C19 13.4477 19.4477 13 20 13C20.5523 13 21 13.4477 21 14V18C21 19.6569 19.6569 21 18 21H6C4.34315 21 3 19.6569 3 18V6C3 4.34314 4.34315 3 6 3H10C10.5523 3 11 3.44771 11 4C11 4.55228 10.5523 5 10 5H6Z" fill="currentColor"></path></svg>
+            </button>
           </div>
           <div class="main__sidebar-nav">
-            <a href="/chat" class="active">Chat with Pipedrive CRM</a>
-            <a href="/chat">Shopify analytics chat</a>
-            <a href="/chat">Chat wit marketing bot</a>
+            <div
+              v-for="cht in chats"
+              :key="cht.id"
+              @click="changeChat(cht.id)"
+              class="main__sidebar-nav--link"
+              :class="[chat && chat.id == cht.id ? 'active' : '']"
+            >
+              {{ cht.name }}
+            </div>
           </div>
         </div>
         <div class="main__sidebar-bottom_nav--container">
@@ -90,6 +111,9 @@
     }
 
     &-header {
+      display: flex;
+      justify-content: space-between;
+
       &-logo {
         width: 100%;
         height: 40px;
@@ -97,13 +121,28 @@
         background-size: contain;
         margin-left: 0.5rem;
       }
+      &-newChatBtn {
+        color: #ececf1;
+        background-color: transparent;
+        background-image: none;
+        border: 0;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+
+        svg {
+          stroke-width: 1.5;
+          height: 18px;
+          width: 18px;
+        }
+      }
     }
     &-nav {
       display: flex;
       flex-direction: column;
       margin-top: 1.25rem;
 
-      a {
+      &--link {
         align-items: center;
         display: flex;
         gap: .5rem;
@@ -113,6 +152,7 @@
         font-size: .875rem;
         line-height: 1.25rem;
         color: #fff;
+        cursor: pointer;
 
         &.active {
           background: #19191B;
@@ -263,3 +303,4 @@
   }
 }
 </style>
+../stores/chatsModule
