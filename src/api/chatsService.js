@@ -36,6 +36,7 @@ export async function createChat(user_id, agent_id, chat) {
         }
       ])
       .select()
+      .single()
     return data
   } catch (error) {
     console.error(error.message)

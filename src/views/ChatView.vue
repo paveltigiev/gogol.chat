@@ -45,8 +45,7 @@
 
       if (await !chat.value) {
         await chatsStore.addChat(userStore.user.user_id, agent.value.id, messages.value)
-        console.log(chat.value)
-        // return null
+        chatsStore.setChats()
       }
 
       const url = `${agent.value.url}${chat.value.id}`
