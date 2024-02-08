@@ -18,7 +18,7 @@
 
   const agentMenuOpen = ref(false)
   const userMessage = ref('')
-  const messages = ref([])
+  const messages = reactive([])
 
   const loading = computed(() => commonsStore.loading)
   const agents = computed(() => settingsStore.agents)
@@ -40,11 +40,11 @@
 
   async function sendMessage() {
     if (!loading.value && !!userMessage.value) {
-      messages.value.push({ content: userMessage.value, role: 'user' })
+      messages.push({ content: userMessage.value, role: 'user' })
       userMessage.value = ""
 
       if (await !chat.value) {
-        await chatsStore.addChat(userStore.user.user_id, agent.value.id, messages.value)
+        await chatsStore.addChat(userStore.user.user_id, agent.value.id, messages)
         chatsStore.setChats()
       }
 
@@ -59,12 +59,12 @@
       })
 
       const completion = await openai.chat.completions.create({
-        messages: messages.value,
+        messages: messages,
         model: "gpt-3.5-turbo",
         stream: true
       })
 
-      messages.value.push({ content: '', role: 'assistant' });
+      messages.push({ content: '', role: 'assistant' });
 
       for await (const part of completion) {
         let line = part.choices[0].delta.content
@@ -86,10 +86,10 @@
   watch(chat, async (newChat) => {
     if (newChat) {
       settingsStore.setAgent(newChat.agent_id)
-      messages.value = newChat.chat
+      messages.splice(0, messages.length, ...newChat.chat)
     } else {
       settingsStore.agent = agents.value[0]
-      messages.value = []
+      messages.splice(0, messages.length)
     }
     userMessage.value = ''
   })
