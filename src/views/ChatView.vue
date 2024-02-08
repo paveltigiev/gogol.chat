@@ -59,7 +59,7 @@
       })
 
       const completion = await openai.chat.completions.create({
-        messages: messages,
+        messages: messages.value,
         model: "gpt-3.5-turbo",
         stream: true
       })
@@ -283,7 +283,7 @@
           width: 100%;
           height: 100%;
           display: flex;
-          background: url('../../public/loading.gif') center center no-repeat;
+          background: url('/loading.gif') center center no-repeat;
           background-size: 64px;
         }
       }
