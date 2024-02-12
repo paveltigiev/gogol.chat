@@ -89,7 +89,7 @@
       font-size: 16px;
       height: 52px;
       padding: 16px 22px;
-      etter-spacing: -0.02em;
+      letter-spacing: -0.02em;
     }
     .formButton {
       display: flex;
