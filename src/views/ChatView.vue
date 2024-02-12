@@ -353,6 +353,7 @@
         border-radius: 16px;
         width: 100%;
         color: var(--color-text);
+        font-size: 1rem;
 
         &:focus {
           outline: none;
