@@ -20,11 +20,12 @@
   const userMessage = ref('')
   const messages = reactive([])
 
-  const loading = computed(() => commonsStore.loading)
   const agents = computed(() => settingsStore.agents.reverse())
   const agent = computed(() => settingsStore.agent)
-  const code = computed(() => dashboardStore.code)
+  const suggestations = computed(() => chatsStore.suggestations)
   const chat = computed(() => chatsStore.chat)
+  const loading = computed(() => commonsStore.loading)
+  const code = computed(() => dashboardStore.code)
 
   const renderMarkdown = text => md.render(text)
 
@@ -97,6 +98,7 @@
   onMounted( async () => {
     await settingsStore.setAgents()
     settingsStore.agent = agents.value[0]
+    chatsStore.setSuggestations()
   })
   onUnmounted(() => chatsStore.chat = null)
 </script>
@@ -104,14 +106,14 @@
 <template>
   <div class="chat-box">
     <div class="dropDownMenu" @click="agentMenuOpen = messages.length > 0? agentMenuOpen : !agentMenuOpen">
-      <div>{{ agent?.name || 'loading' }} <span class="text-token-text-secondary">Amo CRM</span></div>
+      <div>{{ agent?.name || 'loading' }} <span class="text-token-text-secondary">{{ agent?.integration }}</span></div>
       <svg width="16" height="17" viewBox="0 0 16 17" fill="none" class="text-token-text-tertiary" v-if="messages.length <= 0"><path d="M11.3346 7.83203L8.00131 11.1654L4.66797 7.83203" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
     </div>
     <div class="dropDownMenu__items" v-if="agentMenuOpen">
       <div class="dropDownMenu__items-item" v-for="agnt in agents" :key="agnt.id" @click="changeAgent(agnt.id)">
         <div class="dropDownMenu__items-item--text">
           {{ agnt.name }}
-          <span>Amo CRM</span>
+          <span>{{ agnt.integration }}</span>
         </div>
         <div class="dropDownMenu__items-item--selector">
           <svg v-if="agent.id == agnt.id" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" class="icon-md flex-shrink-0 block group-hover:hidden"><path fill-rule="evenodd" clip-rule="evenodd" d="M0 10C0 4.47715 4.47715 0 10 0C15.5228 0 20 4.47715 20 10C20 15.5228 15.5228 20 10 20C4.47715 20 0 15.5228 0 10ZM14.0755 5.93219C14.5272 6.25003 14.6356 6.87383 14.3178 7.32549L9.56781 14.0755C9.39314 14.3237 9.11519 14.4792 8.81226 14.4981C8.50934 14.517 8.21422 14.3973 8.01006 14.1727L5.51006 11.4227C5.13855 11.014 5.16867 10.3816 5.57733 10.0101C5.98598 9.63855 6.61843 9.66867 6.98994 10.0773L8.65042 11.9039L12.6822 6.17451C13 5.72284 13.6238 5.61436 14.0755 5.93219Z" fill="currentColor"></path></svg>
@@ -148,21 +150,9 @@
     </div>
 
     <div class="chat-box__recomendations" v-if="messages.length < 1">
-      <div class="chat-box__recomendations-item" @click="sendRecomendation('Track your sales activities')">
-        <div class="chat-box__recomendations-item--title">How many leads?</div>
-        <div class="chat-box__recomendations-item--text">Track your sales activities</div>
-      </div>
-      <div class="chat-box__recomendations-item" @click="sendRecomendation('Get your sales persons activity data')">
-        <div class="chat-box__recomendations-item--title">Who is most productive</div>
-        <div class="chat-box__recomendations-item--text">Get your sales persons activity data</div>
-      </div>
-      <div class="chat-box__recomendations-item" @click="sendRecomendation('Scoring for your sales funnel')">
-        <div class="chat-box__recomendations-item--title">Most valueabel leads</div>
-        <div class="chat-box__recomendations-item--text">Scoring for your sales funnel</div>
-      </div>
-      <div class="chat-box__recomendations-item" @click="sendRecomendation('Manage your personal activities')">
-        <div class="chat-box__recomendations-item--title">Today activities to-do list</div>
-        <div class="chat-box__recomendations-item--text">Manage your personal activities</div>
+      <div class="chat-box__recomendations-item" @click="sendRecomendation(suggestation.text)" v-for="suggestation in suggestations" :key="suggestation.id">
+        <div class="chat-box__recomendations-item--title">{{ suggestation.title }}</div>
+        <div class="chat-box__recomendations-item--text">{{ suggestation.text }}</div>
       </div>
     </div>
 

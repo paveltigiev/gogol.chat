@@ -42,3 +42,15 @@ export async function createChat(user_id, agent_id, chat) {
     console.error(error.message)
   }
 }
+
+export async function getSuggestations() {
+  try {
+    const { data: suggestations, error } = await supabase
+    .from('suggestations')
+    .select('*')
+
+    return suggestations
+  } catch (error) {
+    console.error(error.message)
+  }
+}
