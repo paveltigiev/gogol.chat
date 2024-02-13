@@ -11,7 +11,7 @@
   const authStore = useAuthStore()
 
   const overlay = computed(() => commonsStore.overlay)
-  const chats = computed(() => chatsStore.chats )
+  const chats = computed(() => chatsStore.chats.reverse())
   const chat = computed(() => chatsStore.chat )
   const user = computed(() => userStore.user )
 
