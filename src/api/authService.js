@@ -1,26 +1,34 @@
 import { supabase } from '@/supabase'
-import { useCommonsStore } from '../stores/commons'
-// const commonsStore = useCommonsStore()
+
+const getURL = () => {
+  console.log('eee')
+  let url =
+    import.meta.env.VITE_PUBLIC_SITE_URL ??
+    import.meta.env.VITE_PUBLIC_DO_URL ??
+    'http://localhost:5173/'
+  url = url.includes('http') ? url : `https://${url}`
+  url = url.charAt(url.length - 1) === '/' ? url : `${url}/`
+  return url
+}
 
 export async function loginWithGoogle() {
   try {
-    // commonsStore.loading = true
     const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: 'google'
+      provider: 'google',
+      options: {
+        redirectTo: getURL(),
+      },
     })
     if (error) throw error
   } catch (error) {
     if (error instanceof Error) {
       console.error(error.message)
     }
-  } finally {
-    // commonsStore.loading = false
   }
 }
 
 export async function loginWithEmail(email) {
   try {
-    // commonsStore.loading = true
     const { error } = await supabase.auth.signInWithOtp({
       email: email,
     })
@@ -30,8 +38,6 @@ export async function loginWithEmail(email) {
     if (error instanceof Error) {
       console.error(error.message)
     }
-  } finally {
-    // commonsStore.loading = false
   }
 }
 
