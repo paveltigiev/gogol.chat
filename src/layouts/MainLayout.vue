@@ -144,6 +144,7 @@
       margin-top: 1.25rem;
 
       &--link {
+        position: relative;
         align-items: center;
         display: flex;
         gap: .5rem;
@@ -154,6 +155,8 @@
         line-height: 1.25rem;
         color: #fff;
         cursor: pointer;
+        white-space: nowrap;
+        overflow-x: hidden;
 
         &.active {
           background: #19191B;
@@ -164,6 +167,26 @@
 
         &:hover {
           background: hwb(240 4% 96%);
+
+          &::after {
+            position: absolute;
+            content: '';
+            background-image: linear-gradient(to left, hwb(240 4% 96%) 0%,transparent);
+            width: 3rem;
+            top: 0;
+            bottom: 0;
+            right: 0;
+          }
+        }
+
+        &::after {
+          position: absolute;
+          content: '';
+          background-image: linear-gradient(to left, var(--color-background-sidebar) 0%,transparent);
+          width: 3rem;
+          top: 0;
+          bottom: 0;
+          right: 0;
         }
       }
     }
