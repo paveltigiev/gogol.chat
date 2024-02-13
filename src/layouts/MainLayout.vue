@@ -64,8 +64,10 @@
         </div>
         <div class="main__sidebar-bottom_nav--container">
           <div class="userBtn" :class="[userMenuOpened? 'active': 'inactive']" @click="userMenuOpened = !userMenuOpened">
-            <div class="userBtn__img"></div>
-            <div class="userBtn__name">{{ user.full_name }}</div>
+            <div class="userBtn__img">
+              <img :src="user.avatar_url" alt="user.full_name" v-if="user.avatar_url">
+            </div>
+            <div class="userBtn__name">{{ user.full_name || user.name }}</div>
           </div>
           <div class="userMenu" :class="[userMenuOpened? 'active': 'inactive']" v-if="userMenuOpened">
             <nav>
@@ -210,6 +212,14 @@
           background: #B22F5B url("/src/assets/img/user.svg") center center no-repeat;
           border-radius: 50%;
           background-size: 14px;
+          overflow: hidden;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+
+          img {
+            max-width: 100%;
+          }
         }
         &__text {
           font-size: .875rem;
