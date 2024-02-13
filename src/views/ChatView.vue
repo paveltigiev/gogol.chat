@@ -1,5 +1,5 @@
 <script setup>
-  import { ref, computed, reactive, onMounted, watch } from "vue"
+  import { ref, computed, reactive, onMounted, watch, onUnmounted } from "vue"
   import { useSettingsStore } from '../stores/settingsModule'
   import { useDashboardStore } from '../stores/dashboard'
   import { useChatsStore } from '../stores/chatsModule'
@@ -98,6 +98,7 @@
     await settingsStore.setAgents()
     settingsStore.agent = agents.value[0]
   })
+  onUnmounted(() => chatsStore.chat = null)
 </script>
 
 <template>

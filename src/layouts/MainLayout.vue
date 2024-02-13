@@ -50,15 +50,16 @@
             </button>
           </div>
           <div class="main__sidebar-nav">
-            <div
+            <router-link
               v-for="cht in chats"
               :key="cht.id"
               @click="changeChat(cht.id)"
               class="main__sidebar-nav--link"
               :class="[chat && chat.id == cht.id ? 'active' : '']"
+              to="/chat"
             >
               {{ cht.name }}
-            </div>
+            </router-link>
           </div>
         </div>
         <div class="main__sidebar-bottom_nav--container">
