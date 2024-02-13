@@ -21,7 +21,7 @@
   const messages = reactive([])
 
   const loading = computed(() => commonsStore.loading)
-  const agents = computed(() => settingsStore.agents)
+  const agents = computed(() => settingsStore.agents.reverse())
   const agent = computed(() => settingsStore.agent)
   const code = computed(() => dashboardStore.code)
   const chat = computed(() => chatsStore.chat)
