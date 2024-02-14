@@ -1,7 +1,4 @@
 <script setup>
-import { ref } from 'vue'
-import { supabase } from '../supabase'
-
 </script>
 
 <template>

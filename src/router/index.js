@@ -20,11 +20,6 @@ const router = createRouter({
           component: () => import('../views/SettingsView.vue')
         }
       ]
-    },
-    {
-      path: '/waiting',
-      name: 'waiting',
-      component: () => import('../views/WaitingView.vue')
     }
   ]
 })
