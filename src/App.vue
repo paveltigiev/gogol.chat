@@ -2,7 +2,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { supabase } from './supabase'
 import { useCommonsStore } from './stores/commons'
-import { useUserStore } from './stores/user'
+import { useUserStore } from './stores/userModule'
 import { useAuthStore } from './stores/auth'
 import AuthView from './views/AuthView.vue'
 import WaitingView from './views/WaitingView.vue'
@@ -37,3 +37,4 @@ onMounted(async () => {
 
 <style scoped lang="scss">
 </style>
+./stores/userModule

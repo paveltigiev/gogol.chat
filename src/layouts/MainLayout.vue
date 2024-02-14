@@ -2,7 +2,7 @@
   import { ref, computed, onMounted } from 'vue';
   import { useChatsStore } from '../stores/chatsModule'
   import { useCommonsStore } from '../stores/commons'
-  import { useUserStore } from '../stores/user'
+  import { useUserStore } from '../stores/userModule'
   import { useAuthStore } from '../stores/auth'
 
   const commonsStore = useCommonsStore()
@@ -279,6 +279,7 @@
     flex: 1;
     // padding:3rem 3rem 0 1.5rem;
     height: 100vh;
+    overflow-y: scroll;
   }
 }
 @media screen and (max-width: 1024px) {
@@ -337,4 +338,4 @@
   }
 }
 </style>
-../stores/chatsModule
+../stores/chatsModule../stores/userModule

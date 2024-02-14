@@ -4,7 +4,7 @@
   import { useDashboardStore } from '../stores/dashboard'
   import { useChatsStore } from '../stores/chatsModule'
   import { useCommonsStore } from '../stores/commons'
-  import { useUserStore } from '../stores/user'
+  import { useUserStore } from '../stores/userModule'
   import MarkdownIt from "markdown-it"
   import OpenAI from "openai"
 
@@ -451,3 +451,4 @@
     }
   }
 </style>
+../stores/userModule
