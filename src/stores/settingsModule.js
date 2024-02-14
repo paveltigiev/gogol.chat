@@ -8,6 +8,7 @@ export const useSettingsStore = defineStore('settings', () => {
   const connections = ref([])
   const intergrations = ref([])
   const transactions = ref([])
+  const totalTokens = 10000
 
   const setAgents = async () => {
     agents.value = await getAgents()
@@ -29,5 +30,5 @@ export const useSettingsStore = defineStore('settings', () => {
     transactions.value = await getTransactions()
   }
 
-  return { agents, agent, connections, intergrations, transactions, setAgents, setAgent, setConnections, setIntergrations, setTransactions }
+  return { agents, agent, connections, intergrations, transactions, totalTokens, setAgents, setAgent, setConnections, setIntergrations, setTransactions }
 })

@@ -26,6 +26,8 @@
   const chat = computed(() => chatsStore.chat)
   const loading = computed(() => commonsStore.loading)
   const code = computed(() => dashboardStore.code)
+  const user = computed(() => userStore.user)
+  const chatAvailable = computed(() => user.value.balance > 0)
 
   const renderMarkdown = text => md.render(text)
 
@@ -35,8 +37,10 @@
   }
 
   function sendRecomendation(message) {
-    userMessage.value = message
-    sendMessage()
+    if (chatAvailable.value) {
+      userMessage.value = message
+      sendMessage()
+    }
   }
 
   async function sendMessage() {
@@ -45,7 +49,7 @@
       userMessage.value = ""
 
       if (await !chat.value) {
-        await chatsStore.addChat(userStore.user.user_id, agent.value.id, messages)
+        await chatsStore.addChat(user.value.user_id, agent.value.id, messages)
         chatsStore.setChats()
       }
 
@@ -75,7 +79,7 @@
         }
       }
       commonsStore.loading = false
-      dashboardStore.setDashboard(url)
+      // dashboardStore.setDashboard(url)
     }
   }
 
@@ -156,14 +160,18 @@
       </div>
     </div>
 
-    <div class="chat-box__form">
+    <div class="chat-box__form" v-if="chatAvailable">
       <input class="chat-box__form-input" @keyup.enter="sendMessage" v-model="userMessage" placeholder="Message Gogol.chat..."/>
       <button class="chat-box__form-btn btn" @click="sendMessage" :disabled="loading">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M7 11L12 6L17 11M12 18V7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
       </button>
       <div class="chat-box__form-info">Gogol Chat provides data from your CRM system</div>
     </div>
-
+    <div class="chat-box__alert" v-else>
+      <div class="chat-box__alert-message">
+        Your tokens have run out. Top up your balance to continue using the chat.
+      </div>
+    </div>
   </div>
 
 </template>
@@ -364,6 +372,7 @@
         align-items: center;
         padding: 0;
         justify-content: center;
+        cursor: pointer;
 
         &:hover {
           background: transparent;
@@ -407,6 +416,30 @@
         }
       }
     }
+
+    &__alert {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 1.5rem;
+
+      &-message {
+        height: 52px;
+        padding-bottom: .875rem;
+        padding-top: .875rem;
+        padding-left: 1rem;
+        padding-right: 3rem;
+        background-color: transparent;
+        align-items: center;
+        border: 1px solid rgb(255, 66, 66);
+        border-radius: 16px;
+        width: 100%;
+        color: rgb(255, 66, 66);
+        font-size: 1rem;
+      }
+    }
+
   }
   .hello-message {
     display: flex;
@@ -451,4 +484,3 @@
     }
   }
 </style>
-../stores/userModule

@@ -5,14 +5,14 @@
 
   const userStore = useUserStore()
   const settingsStore = useSettingsStore()
-  const totalTokens = 10000
 
   const user = computed(() => userStore.user )
   const agents = computed(() => settingsStore.agents )
   const connections = computed(() => settingsStore.connections )
   const intergrations = computed(() => settingsStore.intergrations )
   const transactions = computed(() => settingsStore.transactions )
-  const availablePercent = computed(() => user.value.balance / totalTokens * 100 )
+  const totalTokens = computed(() => settingsStore.totalTokens )
+  const availablePercent = computed(() => user.value.balance / totalTokens.value * 100 )
 
   onMounted(() => {
     settingsStore.setAgents()
@@ -20,7 +20,6 @@
     settingsStore.setIntergrations()
     settingsStore.setTransactions()
   })
-
 </script>
 
 <template>
