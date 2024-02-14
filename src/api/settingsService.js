@@ -35,6 +35,21 @@ export async function getConnections() {
   }
 }
 
+export async function createConnection(connection) {
+  try {
+    const { data, error } = await supabase
+      .from('connections')
+      .insert([
+        connection
+      ])
+      .select()
+      .single()
+    return data
+  } catch(error) {
+    console.error(error)
+  }
+}
+
 export async function getIntergrations() {
   try {
     const { data: intergrations } = await supabase

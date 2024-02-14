@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import { getAgents, getAgent, getConnections, getIntergrations, getTransactions } from '../api/settingsService.js'
+import { getAgents, getAgent, getConnections, createConnection, getIntergrations, getTransactions } from '../api/settingsService.js'
 
 export const useSettingsStore = defineStore('settings', () => {
   const agents = ref([])
@@ -30,5 +30,9 @@ export const useSettingsStore = defineStore('settings', () => {
     transactions.value = await getTransactions()
   }
 
-  return { agents, agent, connections, intergrations, transactions, totalTokens, setAgents, setAgent, setConnections, setIntergrations, setTransactions }
+  const addConnection = async (connection) => {
+    connections.value.push(await createConnection(connection))
+  }
+
+  return { agents, agent, connections, intergrations, transactions, totalTokens, setAgents, setAgent, setConnections, setIntergrations, setTransactions, addConnection }
 })

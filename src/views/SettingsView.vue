@@ -1,10 +1,12 @@
 <script setup>
-  import { computed, onMounted } from 'vue'
+  import { computed, onMounted, ref } from 'vue'
   import { useSettingsStore } from '../stores/settingsModule'
   import { useUserStore } from '../stores/userModule'
+  import ModalDialog from '@/components/ModalDialog.vue'
 
   const userStore = useUserStore()
   const settingsStore = useSettingsStore()
+  const dialogVisible = ref(false)
 
   const user = computed(() => userStore.user )
   const agents = computed(() => settingsStore.agents )
@@ -13,6 +15,41 @@
   const transactions = computed(() => settingsStore.transactions )
   const totalTokens = computed(() => settingsStore.totalTokens )
   const availablePercent = computed(() => user.value.balance / totalTokens.value * 100 )
+
+  const newConnection = ref({
+    name: '',
+    intergration: null,
+    params: {
+      URL: '',
+      token: ''
+    }
+  })
+
+  const handleCloseModal = () => {
+    dialogVisible.value = false
+    newConnection.value = {
+      name: '',
+      intergration: null,
+      params: {
+        URL: '',
+        token: ''
+      }
+    }
+  }
+
+  const handleCreateConnetion = () => {
+    if (newConnection.value.intergration && newConnection.value.params.URL && newConnection.value.params.token) {
+      const connection = {
+        name: newConnection.value.name,
+        integration_id: newConnection.value.intergration.id,
+        params: newConnection.value.params,
+        user_id: user.value.user_id
+      }
+
+      settingsStore.addConnection(connection)
+      handleCloseModal()
+    }
+  }
 
   onMounted(() => {
     settingsStore.setAgents()
@@ -24,6 +61,40 @@
 
 <template>
   <div class="contentpage">
+    <modal-dialog
+      :visible="dialogVisible"
+      @close-modal="handleCloseModal"
+    >
+      <template v-slot:header>
+        Create new connection
+      </template>
+      <template v-slot:body>
+        <div class="form">
+          <div>
+            <label class="form-label mb-2" for="name"><span class="bold">Name</span> required</label>
+            <input class="text-input text-input-sm text-input-full" type="text" placeholder="Connection name" maxlength="64" v-model="newConnection.name" name="name">
+          </div>
+          <div>
+            <label class="form-label mb-2" for="intergration"><span class="bold">Integration</span> required</label>
+            <select class="text-select text-select-sm text-select-full" name="intergration" v-model="newConnection.intergration">
+              <option v-for="intergration in intergrations" :key="intergration.id" :value="intergration">{{ intergration.name }}</option>
+            </select>
+          </div>
+          <div>
+            <label class="form-label mb-2" for="url"><span class="bold">URL</span> required</label>
+            <input class="text-input text-input-sm text-input-full" type="text" :placeholder="newConnection.intergration?.params['URL'] || ''" maxlength="64" v-model="newConnection.params.URL" name="url">
+          </div>
+          <div>
+            <label class="form-label mb-2" for="token"><span class="bold">Token</span> required</label>
+            <input class="text-input text-input-sm text-input-full" type="text" :placeholder="newConnection.intergration?.params['API key'] || ''" maxlength="64" v-model="newConnection.params.token" name="token">
+          </div>
+        </div>
+      </template>
+      <template v-slot:footer>
+        <button class="btn btn-sm btn-filled btn-neutral modal-button" @click="handleCloseModal">Cancel</button>
+        <button class="btn btn-sm btn-filled btn-primary modal-button" @click="handleCreateConnetion">Create connection</button>
+      </template>
+    </modal-dialog>
     <div class="contentpage__header">
       <h1 class="contentpage__header-title">Settings</h1>
     </div>
@@ -43,7 +114,6 @@
         </div>
 
         <div class="credit-grant-month-tokens">
-
           <div class="credit-grant-progress-bar">
             <div class="credit-grant-progress-bar-series credit-grant-bg-grants" :style="{ width: availablePercent + '%' }"></div>
             <div class="credit-grant-progress-bar-series credit-grant-bg-expired" :style="{ width: 100 - availablePercent + '%' }"></div>
@@ -52,11 +122,17 @@
             <span class="credit-grant-has-tooltip" aria-haspopup="true" aria-expanded="false">{{ user.balance }} / {{ totalTokens }}</span>
           </div>
         </div>
-
       </div>
 
-
-      <h3>Connections</h3>
+      <div class="title-container">
+        <h3>Connections</h3>
+        <button type="button" tabindex="0" class="btn btn-sm btn-filled btn-neutral" @click="dialogVisible = true">
+          <span class="btn-label-wrap">
+            <span class="btn-node"><svg xmlns="http://www.w3.org/2000/svg" width="18px" height="18px" fill="currentColor" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v12m-6-6h12"></path></svg></span>
+            <span class="btn-label-inner">Add new connection</span>
+          </span>
+        </button>
+      </div>
       <table class="tbl">
         <thead>
           <tr>
@@ -155,62 +231,8 @@
     }
   }
 
-  .tbl {
-    font-size: 15px;
-    opacity: 1;
-    transition: opacity .3s;
-    border-collapse: collapse;
-    display: table;
-    -webkit-border-horizontal-spacing: 2px;
-    -webkit-border-vertical-spacing: 2px;
-    border-top-color: gray;
-    text-indent: initial;
-
-    th {
-      white-space: nowrap;
-      border: none;
-      color: #202123;
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: .1em;
-      line-height: 16px;
-      padding: 6px 8px;
-      text-align: left;
-      text-transform: uppercase;
-
-      &:first-child {
-        padding-left: 0;
-      }
-    }
-    td {
-      max-width: 120px;
-      min-width: 120px;
-      padding: 8px;
-      line-height: 1;
-      vertical-align: middle;
-      white-space: nowrap;
-      width: 100%;
-
-      border: none;
-      border-top: 1px solid #ececf1 !important;
-      color: #565869;
-      overflow: hidden;
-      text-overflow: ellipsis;
-
-      &:first-child {
-        padding-left: 0;
-      }
-    }
-  }
-  h3 {
-    font-size: 20px;
-    line-height: 28px;
-    color: #202123;
-    font-weight: 700;
-    margin: 30px 0 16px;
-  }
-
   .balance {
+    margin-bottom: 60px;
     &__title {
       font-size: 18px;
       font-weight: bold;
