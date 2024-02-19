@@ -79,7 +79,7 @@
         }
       }
       commonsStore.loading = false
-      // dashboardStore.setDashboard(url)
+      dashboardStore.setDashboard(url)
     }
   }
 
