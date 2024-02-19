@@ -20,7 +20,7 @@
   const userMessage = ref('')
   const messages = reactive([])
 
-  const agents = computed(() => settingsStore.agents.reverse())
+  const agents = computed(() => settingsStore.agents)
   const agent = computed(() => settingsStore.agent)
   const suggestations = computed(() => chatsStore.suggestations)
   const chat = computed(() => chatsStore.chat)
@@ -79,7 +79,6 @@
         }
       }
       commonsStore.loading = false
-      dashboardStore.setDashboard(url)
     }
   }
 
@@ -92,9 +91,13 @@
     if (newChat) {
       settingsStore.setAgent(newChat.agent_id)
       messages.splice(0, messages.length, ...newChat.chat)
+
+      dashboardStore.subscribeToCode(chat.value.id)
     } else {
       settingsStore.agent = agents.value[0]
       messages.splice(0, messages.length)
+
+      dashboardStore.code = ''
     }
     userMessage.value = ''
   })
