@@ -18,7 +18,47 @@ const router = createRouter({
           path: '/settings',
           name: 'settings',
           component: () => import('../views/SettingsView.vue')
-        }
+        },
+        {
+          path: '/templates',
+          name: 'Templates',
+          component: () => import('../templates/Templates.vue')
+        },
+        {
+          path: '/tpl1',
+          name: 'tpl1',
+          component: () => import('../templates/Tpl1.vue')
+        },
+        {
+          path: '/tpl2',
+          name: 'tpl2',
+          component: () => import('../templates/Tpl2.vue')
+        },
+        {
+          path: '/tpl3',
+          name: 'tpl3',
+          component: () => import('../templates/Tpl3.vue')
+        },
+        {
+          path: '/tpl4',
+          name: 'tpl4',
+          component: () => import('../templates/Tpl4.vue')
+        },
+        {
+          path: '/tpl5',
+          name: 'tpl5',
+          component: () => import('../templates/Tpl5.vue')
+        },
+        {
+          path: '/tpl6',
+          name: 'tpl6',
+          component: () => import('../templates/Tpl6.vue')
+        },
+        {
+          path: '/tpl7',
+          name: 'tpl7',
+          component: () => import('../templates/Tpl7.vue')
+        },
       ]
     }
   ]
