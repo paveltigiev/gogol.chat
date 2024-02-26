@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import MainLayout from '../layouts/MainLayout.vue'
+import SettingsLayout from '@/layouts/SettingsLayout.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -13,11 +14,6 @@ const router = createRouter({
           path: '/chat',
           name: 'chat',
           component: () => import('../views/ChatView.vue')
-        },
-        {
-          path: '/settings',
-          name: 'settings',
-          component: () => import('../views/SettingsView.vue')
         },
         {
           path: '/templates',
@@ -58,6 +54,29 @@ const router = createRouter({
           path: '/tpl7',
           name: 'tpl7',
           component: () => import('../templates/Tpl7.vue')
+        },
+      ]
+    },
+    {
+      name: 'settings',
+      component: SettingsLayout,
+      path: '/settings',
+      redirect: '/settings/connections',
+      children: [
+        {
+          path: '/settings/connections',
+          name: 'connections',
+          component: () => import('../views/settings/ConnectionsView.vue')
+        },
+        {
+          path: '/settings/billing',
+          name: 'billing',
+          component: () => import('../views/settings/BillingView.vue')
+        },
+        {
+          path: '/settings/agents',
+          name: 'agents',
+          component: () => import('../views/settings/AgentsView.vue')
         },
       ]
     }

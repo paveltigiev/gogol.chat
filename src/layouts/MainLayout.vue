@@ -1,10 +1,12 @@
 <script setup>
-  import { ref, computed, onMounted } from 'vue';
+  import { ref, computed, onMounted, onUnmounted } from 'vue';
   import { useChatsStore } from '../stores/chatsModule'
+  import { useDashboardStore } from '../stores/dashboard'
   import { useCommonsStore } from '../stores/commons'
   import { useUserStore } from '../stores/userModule'
   import { useAuthStore } from '../stores/auth'
 
+  const dashboardStore = useDashboardStore()
   const commonsStore = useCommonsStore()
   const chatsStore = useChatsStore()
   const userStore = useUserStore()
@@ -30,6 +32,10 @@
   onMounted(() => {
     chatsStore.setChats()
   })
+  onUnmounted(() => {
+    chatsStore.chat = null
+    dashboardStore.code = ''
+  })
 </script>
 
 <template>
@@ -45,8 +51,9 @@
         <div class="main__sidebar-nav--container">
           <div class="main__sidebar-header">
             <router-link to="/chat" class="main__sidebar-header-logo" />
-            <button class="main__sidebar-header-newChatBtn">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="icon-md" @click="newChat"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.7929 2.79289C18.0118 1.57394 19.9882 1.57394 21.2071 2.79289C22.4261 4.01184 22.4261 5.98815 21.2071 7.20711L12.7071 15.7071C12.5196 15.8946 12.2652 16 12 16H9C8.44772 16 8 15.5523 8 15V12C8 11.7348 8.10536 11.4804 8.29289 11.2929L16.7929 2.79289ZM19.7929 4.20711C19.355 3.7692 18.645 3.7692 18.2071 4.2071L10 12.4142V14H11.5858L19.7929 5.79289C20.2308 5.35499 20.2308 4.64501 19.7929 4.20711ZM6 5C5.44772 5 5 5.44771 5 6V18C5 18.5523 5.44772 19 6 19H18C18.5523 19 19 18.5523 19 18V14C19 13.4477 19.4477 13 20 13C20.5523 13 21 13.4477 21 14V18C21 19.6569 19.6569 21 18 21H6C4.34315 21 3 19.6569 3 18V6C3 4.34314 4.34315 3 6 3H10C10.5523 3 11 3.44771 11 4C11 4.55228 10.5523 5 10 5H6Z" fill="currentColor"></path></svg>
+            <button class="main__sidebar-header-newChatBtn" @click="newChat">
+              New chat
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="icon-md"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.7929 2.79289C18.0118 1.57394 19.9882 1.57394 21.2071 2.79289C22.4261 4.01184 22.4261 5.98815 21.2071 7.20711L12.7071 15.7071C12.5196 15.8946 12.2652 16 12 16H9C8.44772 16 8 15.5523 8 15V12C8 11.7348 8.10536 11.4804 8.29289 11.2929L16.7929 2.79289ZM19.7929 4.20711C19.355 3.7692 18.645 3.7692 18.2071 4.2071L10 12.4142V14H11.5858L19.7929 5.79289C20.2308 5.35499 20.2308 4.64501 19.7929 4.20711ZM6 5C5.44772 5 5 5.44771 5 6V18C5 18.5523 5.44772 19 6 19H18C18.5523 19 19 18.5523 19 18V14C19 13.4477 19.4477 13 20 13C20.5523 13 21 13.4477 21 14V18C21 19.6569 19.6569 21 18 21H6C4.34315 21 3 19.6569 3 18V6C3 4.34314 4.34315 3 6 3H10C10.5523 3 11 3.44771 11 4C11 4.55228 10.5523 5 10 5H6Z" fill="currentColor"></path></svg>
             </button>
           </div>
           <div class="main__sidebar-nav">
@@ -91,251 +98,4 @@
 </template>
 
 <style lang="scss" scoped>
-.main {
-  display: flex;
-  justify-content: space-between;
-  // gap: 16px;
-
-  .nav-mobile-button {
-    display: none;
-  }
-
-  &__sidebar {
-    background: var(--color-background-sidebar);
-    width: 260px;
-    padding: .875rem .75rem .75rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    height: 100vh;
-
-    &-closeBtn {
-      display: none;
-    }
-
-    &-header {
-      display: flex;
-      justify-content: space-between;
-
-      &-logo {
-        width: 100%;
-        height: 40px;
-        background: url('../assets/img/logo.svg') 0 0 no-repeat;
-        background-size: contain;
-        margin-left: 0.5rem;
-      }
-      &-newChatBtn {
-        color: #ececf1;
-        background-color: transparent;
-        background-image: none;
-        border: 0;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-
-        svg {
-          stroke-width: 1.5;
-          height: 18px;
-          width: 18px;
-        }
-      }
-    }
-    &-nav {
-      display: flex;
-      flex-direction: column;
-      margin-top: 1.25rem;
-
-      &--link {
-        position: relative;
-        align-items: center;
-        display: flex;
-        gap: .5rem;
-        padding: .5rem;
-        text-decoration: none;
-        border-radius: .5rem;
-        font-size: .875rem;
-        line-height: 1.25rem;
-        color: #fff;
-        cursor: pointer;
-        white-space: nowrap;
-        overflow-x: hidden;
-
-        &.active {
-          background: #19191B;
-          &:hover {
-            background: #19191B;
-          }
-        }
-
-        &:hover {
-          background: hwb(240 4% 96%);
-
-          &::after {
-            position: absolute;
-            content: '';
-            background-image: linear-gradient(to left, hwb(240 4% 96%) 0%,transparent);
-            width: 3rem;
-            top: 0;
-            bottom: 0;
-            right: 0;
-          }
-        }
-
-        &::after {
-          position: absolute;
-          content: '';
-          background-image: linear-gradient(to left, var(--color-background-sidebar) 0%,transparent);
-          width: 3rem;
-          top: 0;
-          bottom: 0;
-          right: 0;
-        }
-      }
-    }
-    .main__sidebar-bottom_nav--container {
-      position: relative;
-      .userBtn {
-        display: flex;
-        align-items: center;
-        gap: .5rem;
-        padding: .5rem;
-        text-decoration: none;
-        border-radius: .5rem;
-        text-decoration: none;
-        cursor: pointer;
-        gap: 8px;
-        color: #fff;
-
-        &__img {
-          width: 32px;
-          height: 32px;
-          background: #B22F5B url("/src/assets/img/user.svg") center center no-repeat;
-          border-radius: 50%;
-          background-size: 14px;
-          overflow: hidden;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-
-          img {
-            max-width: 100%;
-          }
-        }
-        &__text {
-          font-size: .875rem;
-          line-height: 1.25rem;
-        }
-
-        &:hover, &.active {
-          background: #202123;
-        }
-      }
-      .userMenu {
-        width: 100%;
-        position: absolute;
-        margin-bottom: .25rem;
-        left: 0;
-        z-index: 20;
-        bottom: 100%;
-        background-color: rgba(32,33,35,1);
-        border: 1px solid rgba(52,53,65,1);
-        outline: 2px solid transparent;
-        outline-offset: 2px;
-        opacity: 1;padding-top: .25rem;
-        padding-bottom: .375rem;
-        border-radius: .5rem;
-
-        &__item {
-          text-decoration: none;
-          color: rgba(255,255,255,1);
-          font-size: .875rem;
-          line-height: 1.25rem;
-          padding-bottom: .25rem;
-          padding-top: .25rem;
-          padding-left: .75rem;
-          padding-right: .75rem;
-          gap: .75rem;
-          align-items: center;
-          cursor: pointer;
-          min-height: 44px;
-          display: flex;
-
-          &:hover {
-            background-color: rgba(52,53,65,1);
-          }
-
-          .icon-md {
-            stroke-width: 1.5;
-            height: 18px;
-            width: 18px;
-            display: block;
-            vertical-align: middle;
-          }
-        }
-      }
-    }
-  }
-  &__container {
-    flex: 1;
-    // padding:3rem 3rem 0 1.5rem;
-    height: 100vh;
-    overflow-y: scroll;
-  }
-}
-@media screen and (max-width: 1024px) {
-  .main {
-    gap: 8px;
-
-    // &__sidebar {
-    //   width: 180px;
-    // }
-    // &__container {
-    //   padding:1rem 1rem 0 .5rem;
-    // }
-  }
-}
-@media screen and (max-width: 640px) {
-  .main {
-    gap: 0px;
-
-    .nav-mobile-button{
-      position: absolute;
-      z-index: 999;
-      display: block;
-      top: 6px;
-      left: 10px;
-    }
-
-    &__sidebar {
-      position: absolute;
-      left: -320px;
-      width: 260px;
-      z-index: 999;
-      transition: left 0.4s ease;
-
-      &-closeBtn {
-        position: absolute;
-        right: -56px;
-        width: 40px;
-        height: 40px;
-        border: 2px solid rgb(217, 217, 227);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-
-        svg {
-          color: rgb(255, 255, 255);
-        }
-      }
-
-      &.active {
-        left: 0;
-      }
-    }
-    // &__container {
-    //   padding: 2rem 1rem 0 0.8rem;
-    // }
-  }
-}
 </style>
-../stores/chatsModule../stores/userModule

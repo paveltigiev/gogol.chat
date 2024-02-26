@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import { getAgents, getAgent, getConnections, createConnection, getIntergrations, getTransactions } from '../api/settingsService.js'
+import { fetchGetAgents, fetchGetAgent, fetchGetConnections, fetchCreateConnection, fetchGetIntergrations, fetchGetTransactions, fetchUpdateConnection, fetchDeleteConnection } from '../api/settingsService.js'
 
 export const useSettingsStore = defineStore('settings', () => {
   const agents = ref([])
@@ -11,28 +11,36 @@ export const useSettingsStore = defineStore('settings', () => {
   const totalTokens = 10000
 
   const setAgents = async () => {
-    agents.value = await getAgents()
+    agents.value = await fetchGetAgents()
   }
 
   const setAgent = async (id) => {
-    agent.value = await getAgent(id)
+    agent.value = await fetchGetAgent(id)
   }
 
   const setConnections = async () => {
-    connections.value = await getConnections()
+    connections.value = await fetchGetConnections()
   }
 
   const setIntergrations = async () => {
-    intergrations.value = await getIntergrations()
+    intergrations.value = await fetchGetIntergrations()
   }
 
   const setTransactions = async () => {
-    transactions.value = await getTransactions()
+    transactions.value = await fetchGetTransactions()
   }
 
   const addConnection = async (connection) => {
-    connections.value.push(await createConnection(connection))
+    connections.value.push(await fetchCreateConnection(connection))
+  }
+  const updateConnection = async (connection) => {
+    await fetchUpdateConnection(connection)
+    setConnections()
+  }
+  const deleteConnection = async (connection) => {
+    await fetchDeleteConnection(connection)
+    setConnections()
   }
 
-  return { agents, agent, connections, intergrations, transactions, totalTokens, setAgents, setAgent, setConnections, setIntergrations, setTransactions, addConnection }
+  return { agents, agent, connections, intergrations, transactions, totalTokens, setAgents, setAgent, setConnections, setIntergrations, setTransactions, addConnection, updateConnection, deleteConnection }
 })

@@ -1,6 +1,6 @@
 :root {
-  --color-background: #F3F7FF;
-  --color-background-sidebar: #000;
+  --color-background: #FFFFFF;
+  --color-background-sidebar: #121214;
   --color-border: #ADADAE;
   --color-heading: #000;
   --color-text: #000;
@@ -29,9 +29,7 @@ body {
   min-height: 100vh;
   color: var(--color-text);
   background: var(--color-background);
-  transition:
-    color 0.5s,
-    background-color 0.5s;
+  transition: color 0.5s, background-color 0.5s;
   line-height: 1.5;
   font-family: Söhne,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif,Helvetica Neue,Arial,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;
   font-size: 16px;

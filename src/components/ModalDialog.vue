@@ -10,7 +10,7 @@
   const emits = defineEmits(['close-modal'])
 
   const closeModal = () => {
-    emits('close-Modal')
+    emits('close-modal')
   }
 </script>
 
@@ -28,7 +28,8 @@
       </div>
       <div class="modal__content">
         <div class="modal__content-header">
-          <slot name="header"></slot>
+          <div class="modal__content-header--title"><slot name="title"></slot></div>
+          <div class="modal__content-header--subtitle"><slot name="subtitle"></slot></div>
         </div>
         <div class="modal__content-body">
           <slot name="body"></slot>
@@ -75,12 +76,21 @@
     transform: translateY(0);
 
     &-header {
-      margin: 20px 24px 16px;
-      margin-right: 40px;
-      font-size: 20px;
-      line-height: 28px;
+      margin: 38px 24px 14px;
       color: #202123;
-      font-weight: 700;
+
+      &--title {
+        font-weight: 600;
+        font-size: 20px;
+        line-height: 24.2px;
+        margin-bottom: 12px;
+      }
+      &--subtitle {
+        font-size: 14px;
+        line-height: 16.94px;
+        letter-spacing: 0.02em;
+        margin-bottom: 26px;
+      }
     }
 
     &-body {

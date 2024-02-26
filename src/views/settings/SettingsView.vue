@@ -1,7 +1,7 @@
 <script setup>
   import { computed, onMounted, ref } from 'vue'
-  import { useSettingsStore } from '../stores/settingsModule'
-  import { useUserStore } from '../stores/userModule'
+  import { useSettingsStore } from '../../stores/settingsModule'
+  import { useUserStore } from '../../stores/userModule'
   import ModalDialog from '@/components/ModalDialog.vue'
   import router from '@/router'
 
@@ -58,8 +58,6 @@
     settingsStore.setIntergrations()
     settingsStore.setTransactions()
   })
-
-  const showtemplates = () => router.push('/templates')
 </script>
 
 <template>
@@ -99,7 +97,7 @@
       </template>
     </modal-dialog>
     <div class="contentpage__header">
-      <h1 class="contentpage__header-title">Setting<span @click="showtemplates">s</span></h1>
+      <h1 class="contentpage__header-title">Setting</h1>
     </div>
     <div class="contentpage__content">
       <div class="balance">
