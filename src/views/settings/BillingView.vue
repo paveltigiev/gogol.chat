@@ -26,7 +26,7 @@
       <div class="title-container">
         <p>Token is the fuel of Gogol.Chat. You can run and use any assistants with tokens. Here is your billing and usage data.</p>
       </div>
-      <div class="balance">
+      <!-- <div class="balance">
         <h3 class="balance__title">Balance:&nbsp;<span>{{ user.balance }} tokens</span></h3>
 
         <div class="credit-grant-legend">
@@ -49,8 +49,25 @@
             <span class="credit-grant-has-tooltip" aria-haspopup="true" aria-expanded="false">{{ user.balance }} / {{ totalTokens }}</span>
           </div>
         </div>
-      </div>
+      </div> -->
 
+      <div class="stats">
+        <div class="stats-item">
+          <div class="stats-item-value">{{ user.balance }}</div>
+          <div class="stats-item-info">tokens</div>
+          <div class="stats-item-title">Current balance</div>
+        </div>
+        <div class="stats-item">
+          <div class="stats-item-value">0</div>
+          <div class="stats-item-info">tokens</div>
+          <div class="stats-item-title">Monthly spend</div>
+        </div>
+        <div class="stats-item">
+          <div class="stats-item-value">0</div>
+          <div class="stats-item-info">USD</div>
+          <div class="stats-item-title">Monthly spend (USD)</div>
+        </div>
+      </div>
 
       <h3>Tokens topus</h3>
       <div class="title-container">
@@ -79,6 +96,35 @@
 </template>
 
 <style lang="scss" scoped>
+
+  .stats {
+    display: flex;
+    gap: 30px;
+
+    &-item {
+      flex: 1;
+      padding: 14px 20px;
+      border: 1px solid #D1D1D1;
+      border-radius: 7px;
+
+      &-value {
+        font-weight: 700;
+        font-size: 38px;
+        margin-bottom: -2px;
+      }
+      &-info {
+        font-weight: 600;
+        font-size: 14px;
+        margin-bottom: 9px;
+        opacity: 0.5;
+      }
+      &-title {
+        font-weight: 400;
+        font-size: 16px;
+      }
+    }
+  }
+
   .balance {
     margin-bottom: 60px;
     &__title {
