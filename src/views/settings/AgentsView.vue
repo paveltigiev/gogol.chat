@@ -2,6 +2,7 @@
   import { computed, onMounted, ref } from 'vue'
   import { useSettingsStore } from '../../stores/settingsModule'
   import ModalDialog from '@/components/ModalDialog.vue'
+  import router from '../../router'
 
   const settingsStore = useSettingsStore()
   const dialogVisible = ref(false)
@@ -18,7 +19,10 @@
     dialogVisible.value = false
     agent.value = {}
   }
-  const handleChatWithAgent = () => null
+  const handleChatWithAgent = (agent) => {
+    settingsStore.setAgent(agent.id)
+    router.push('/chat')
+  }
 
   onMounted(() => {
     settingsStore.setAgents()
@@ -35,14 +39,13 @@
         {{ agent.name }}
       </template>
       <template v-slot:subtitle>
-        ...
       </template>
       <template v-slot:body>
-        {{ agent.name }}
+        <div v-html="agent.params.meta.full_desc"></div>
       </template>
       <template v-slot:footer>
         <button class="btn btn-sm btn-filled btn-neutral modal-button" @click="handleCloseModal">Cancel</button>
-        <button class="btn btn-sm btn-filled btn-primary modal-button" @click="handleChatWithAgent">chat with agent</button>
+        <button class="btn btn-sm btn-filled btn-primary modal-button" @click="handleChatWithAgent(agent)">chat with agent</button>
       </template>
     </modal-dialog>
     <div class="contentpage__header">
@@ -56,9 +59,9 @@
       <div class="agents">
         <div class="agents__item" v-for="agent in agents" :key="agent.id" @click="handleOpenAgent(agent)">
           <h3 class="agents__item-title">{{ agent.name }}</h3>
-          <h4 class="agents__item-subtitle">Update your CRM just from chat</h4>
+          <h4 class="agents__item-subtitle">{{ agent.params.meta.short_desc }}</h4>
 
-          <div class="agents__item-integration">integrations needed: {{ agent.integration }}</div>
+          <div class="agents__item-integration" v-html="agent.params.meta.comment"></div>
         </div>
       </div>
 
@@ -83,7 +86,7 @@
         content: '';
         position: absolute;
         top: 15px;
-        right: 20px;
+        right: 15px;
         width: 38px;
         height: 38px;
         background: url('../../assets/img/info.svg') right 0 no-repeat;

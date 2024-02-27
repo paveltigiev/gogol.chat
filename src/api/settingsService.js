@@ -3,7 +3,7 @@ import { supabase } from '@/supabase'
 export async function fetchGetAgents() {
   try {
     const { data: agents } = await supabase
-      .from('agents')
+      .from('agents_definition')
       .select('*')
     return agents
   } catch(error) {

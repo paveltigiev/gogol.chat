@@ -1,18 +1,14 @@
 <script setup>
   import { ref, computed, onMounted } from 'vue';
-  import { useChatsStore } from '../stores/chatsModule'
   import { useCommonsStore } from '../stores/commons'
   import { useUserStore } from '../stores/userModule'
   import { useAuthStore } from '../stores/auth'
 
   const commonsStore = useCommonsStore()
-  const chatsStore = useChatsStore()
   const userStore = useUserStore()
   const authStore = useAuthStore()
 
   const overlay = computed(() => commonsStore.overlay)
-  const chats = computed(() => chatsStore.chats.reverse())
-  const chat = computed(() => chatsStore.chat )
   const user = computed(() => userStore.user )
 
   const userMenuOpened = ref(false)
@@ -23,8 +19,6 @@
     commonsStore.overlay = !overlay.value
   }
 
-
-  const newChat = () => chatsStore.chat = null
   const logout = () => authStore.setLogout()
 
   onMounted(() => {

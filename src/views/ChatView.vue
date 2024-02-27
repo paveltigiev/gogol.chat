@@ -104,7 +104,7 @@
 
   onMounted( async () => {
     await settingsStore.setAgents()
-    settingsStore.agent = agents.value[0]
+    if (settingsStore.agent == null ) settingsStore.agent = agents.value[0]
     chatsStore.setSuggestations()
   })
   onUnmounted(() => chatsStore.chat = null)
