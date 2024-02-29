@@ -8,8 +8,8 @@
 
   const user = computed(() => userStore.user )
   const transactions = computed(() => settingsStore.transactions )
-  const totalTokens = computed(() => settingsStore.totalTokens )
-  const availablePercent = computed(() => user.value.balance / totalTokens.value * 100 )
+  // const totalTokens = computed(() => settingsStore.totalTokens )
+  // const availablePercent = computed(() => user.value.balance / totalTokens.value * 100 )
 
   onMounted(() => {
     settingsStore.setTransactions()
@@ -96,7 +96,6 @@
 </template>
 
 <style lang="scss" scoped>
-
   .stats {
     display: flex;
     gap: 30px;

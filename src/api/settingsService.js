@@ -1,10 +1,12 @@
 import { supabase } from '@/supabase'
 
-export async function fetchGetAgents() {
+export async function fetchGetAgents(user_id, role) {
   try {
     const { data: agents } = await supabase
-      .from('agents_definition')
+      .from('user_agent_access_view')
       .select('*')
+      .eq('role', role)
+      .eq('user_id', user_id)
     return agents
   } catch(error) {
     console.error(error)

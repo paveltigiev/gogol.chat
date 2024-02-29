@@ -132,6 +132,7 @@ h3 {
   -webkit-user-select: none;
   user-select: none;
   white-space: nowrap;
+  text-decoration: none;
 }
 .btn-sm, .btn-xsm {
   font-size: 14px;
@@ -272,9 +273,9 @@ h3 {
       margin: 10px 0;
 
       &-logo {
-        width: 27px;
-        height: 28px;
-        background: url('../assets/img/small_logo.svg') 0 0 no-repeat;
+        width: 140px;
+        height: 38px;
+        background: url('../assets/img/main_logo.svg') 0 0 no-repeat;
         background-size: contain;
         margin-left: 0.3rem;
       }
@@ -292,6 +293,7 @@ h3 {
         line-height: 1.6em;
         padding: 0;
         margin: 0 0.5em;
+        display: none;
       }
     }
     &-nav {
@@ -549,5 +551,41 @@ h3 {
   &__content {
     max-width: 1100px;
     padding: 27px 35px;
+  }
+}
+
+.agents {
+  display: flex;
+  gap: 30px;
+
+  &__item {
+    display: block;
+    text-decoration: none;
+    position: relative;
+    border: 1px solid #D1D1D1;
+    border-radius: 7px;
+    padding: 20px;
+    width: 33%;
+    cursor: pointer;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      width: 38px;
+      height: 38px;
+      background: url('./img/info.svg') right 0 no-repeat;
+    }
+
+    &-title {
+      margin: 0;
+      font-style: 16px;
+    }
+    &-subtitle {
+      margin: 0 0 50px;
+      font-style: 14px;
+      font-weight: 400;
+    }
   }
 }

@@ -1,6 +1,8 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { fetchGetAgents, fetchGetAgent, fetchGetConnections, fetchCreateConnection, fetchGetIntergrations, fetchGetTransactions, fetchUpdateConnection, fetchDeleteConnection } from '../api/settingsService.js'
+import { useUserStore } from './userModule.js'
+const userStore = useUserStore()
 
 export const useSettingsStore = defineStore('settings', () => {
   const agents = ref([])
@@ -11,7 +13,8 @@ export const useSettingsStore = defineStore('settings', () => {
   const totalTokens = 10000
 
   const setAgents = async () => {
-    agents.value = await fetchGetAgents()
+    const role = 'full'
+    agents.value = await fetchGetAgents(userStore.user.user_id, role)
   }
 
   const setAgent = async (id) => {

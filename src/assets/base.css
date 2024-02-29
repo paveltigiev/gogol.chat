@@ -41,3 +41,6 @@ body {
 a {
   color: var(--color-text);
 }
+b {
+    font-weight: bold;
+}

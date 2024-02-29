@@ -19,8 +19,8 @@
     dialogVisible.value = false
     agent.value = {}
   }
-  const handleChatWithAgent = (agent) => {
-    settingsStore.setAgent(agent.id)
+  const handleChatWithAgent = async (agent) => {
+    await settingsStore.setAgent(agent.agent_id)
     router.push('/chat')
   }
 
@@ -36,16 +36,16 @@
       @close-modal="handleCloseModal"
     >
       <template v-slot:title>
-        {{ agent.name }}
+        {{ agent.agent_name }}
       </template>
       <template v-slot:subtitle>
       </template>
       <template v-slot:body>
-        <div v-html="agent.params.meta.full_desc"></div>
+        <div v-html="agent.agents_definition_params.meta.full_desc"></div>
       </template>
       <template v-slot:footer>
         <button class="btn btn-sm btn-filled btn-neutral modal-button" @click="handleCloseModal">Cancel</button>
-        <button class="btn btn-sm btn-filled btn-primary modal-button" @click="handleChatWithAgent(agent)">chat with agent</button>
+        <a href="/chat?agent_id=3" class="btn btn-sm btn-filled btn-primary modal-button">Chat with agent</a>
       </template>
     </modal-dialog>
     <div class="contentpage__header">
@@ -58,10 +58,10 @@
 
       <div class="agents">
         <div class="agents__item" v-for="agent in agents" :key="agent.id" @click="handleOpenAgent(agent)">
-          <h3 class="agents__item-title">{{ agent.name }}</h3>
-          <h4 class="agents__item-subtitle">{{ agent.params.meta.short_desc }}</h4>
+          <h3 class="agents__item-title">{{ agent.agent_name }}</h3>
+          <h4 class="agents__item-subtitle">{{ agent.agents_definition_params.meta.short_desc }}</h4>
 
-          <div class="agents__item-integration" v-html="agent.params.meta.comment"></div>
+          <div class="agents__item-integration" v-html="agent.agents_definition_params.meta.comment"></div>
         </div>
       </div>
 
@@ -70,37 +70,4 @@
 </template>
 
 <style lang="scss" scoped>
-  .agents {
-    display: flex;
-    gap: 30px;
-
-    &__item {
-      position: relative;
-      border: 1px solid #D1D1D1;
-      border-radius: 7px;
-      padding: 20px;
-      width: 33%;
-      cursor: pointer;
-
-      &::before {
-        content: '';
-        position: absolute;
-        top: 15px;
-        right: 15px;
-        width: 38px;
-        height: 38px;
-        background: url('../../assets/img/info.svg') right 0 no-repeat;
-      }
-
-      &-title {
-        margin: 0;
-        font-style: 16px;
-      }
-      &-subtitle {
-        margin: 0 0 50px;
-        font-style: 14px;
-        font-weight: 400;
-      }
-    }
-  }
 </style>

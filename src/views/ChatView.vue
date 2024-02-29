@@ -23,6 +23,7 @@
   const agents = computed(() => settingsStore.agents)
   const agent = computed(() => settingsStore.agent)
   const suggestations = computed(() => chatsStore.suggestations)
+  const chats = computed(() => chatsStore.chats)
   const chat = computed(() => chatsStore.chat)
   const loading = computed(() => commonsStore.loading)
   const code = computed(() => dashboardStore.code)
@@ -87,40 +88,72 @@
     settingsStore.setAgent(id)
   }
 
-  watch(chat, async (newChat) => {
-    if (newChat) {
-      settingsStore.setAgent(newChat.agent_id)
-      messages.splice(0, messages.length, ...newChat.chat)
+  const showChat = (chat) => {
+    settingsStore.setAgent(chat.agent_id)
+    messages.splice(0, messages.length, ...chat.chat)
+    dashboardStore.subscribeToCode(chat.id)
+  }
 
-      dashboardStore.subscribeToCode(chat.value.id)
+  watch(chat, async (active_chat) => {
+    if (active_chat) {
+      showChat(active_chat)
     } else {
-      settingsStore.agent = agents.value[0]
-      messages.splice(0, messages.length)
-
-      dashboardStore.code = ''
+      // settingsStore.agent = agents.value[0]
+      // messages.splice(0, messages.length)
+      // dashboardStore.code = ''
+      console.log('обновился чат, но там пусто. надо что-то делать')
     }
     userMessage.value = ''
   })
 
   onMounted( async () => {
-    await settingsStore.setAgents()
-    if (settingsStore.agent == null ) settingsStore.agent = agents.value[0]
-    chatsStore.setSuggestations()
+    // await settingsStore.setAgents()
+    await chatsStore.setChats()
+
+    const params = new URLSearchParams(window.location.search)
+
+    if (params.has('agent_id')) {
+      const agentId = params.get('agent_id')
+      await settingsStore.setAgent(agentId)
+    }
+
+    // если задан чат, задаем агента и отображаем историю чата
+    if (chat.value) {
+      showChat(chat.value)
+    }
+    // если чат не задан, но задан агент, тогда показываем пустой чат, сугестейшены
+    if (!chat.value && settingsStore.agent) {
+      chatsStore.setSuggestations()
+    }
+    // если не задан чат и не задан агент, но есть чаты, тогда загружаем первый чат и его агента
+    if (!chat.value && !settingsStore.agent && chats.value.length > 0) {
+      chatsStore.setChat(chats.value[0].id)
+    }
+    // если нет чата, нет агента и нет чатов, тогда задаем четвертого агента и отправляем месседж
+    if (!chat.value && !settingsStore.agent && chats.value.length < 1) {
+      await settingsStore.setAgent(4)
+      userMessage.value = 'What can you do?'
+      sendMessage()
+    }
+
   })
-  onUnmounted(() => chatsStore.chat = null)
+  onUnmounted(() => {
+    chatsStore.chat = null
+    settingsStore.agent = null
+  })
 </script>
 
 <template>
   <div class="chat-box">
-    <div class="dropDownMenu" @click="agentMenuOpen = messages.length > 0? agentMenuOpen : !agentMenuOpen">
+    <div class="dropDownMenu" @click="agentMenuOpen = messages.length > 0 ? agentMenuOpen : !agentMenuOpen">
       <div>{{ agent?.name || 'loading' }} <span class="text-token-text-secondary">{{ agent?.integration }}</span></div>
       <svg width="16" height="17" viewBox="0 0 16 17" fill="none" class="text-token-text-tertiary" v-if="messages.length <= 0"><path d="M11.3346 7.83203L8.00131 11.1654L4.66797 7.83203" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
     </div>
-    <div class="dropDownMenu__items" v-if="agentMenuOpen">
+    <div class="dropDownMenu__items" v-if="agentMenuOpen && false">
       <div class="dropDownMenu__items-item" v-for="agnt in agents" :key="agnt.id" @click="changeAgent(agnt.id)">
         <div class="dropDownMenu__items-item--text">
-          {{ agnt.name }}
-          <span>{{ agnt.integration }}</span>
+          {{ agnt.agent_name }}
+          <span>{{ agnt.integration_name }}</span>
         </div>
         <div class="dropDownMenu__items-item--selector">
           <svg v-if="agent.id == agnt.id" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" class="icon-md flex-shrink-0 block group-hover:hidden"><path fill-rule="evenodd" clip-rule="evenodd" d="M0 10C0 4.47715 4.47715 0 10 0C15.5228 0 20 4.47715 20 10C20 15.5228 15.5228 20 10 20C4.47715 20 0 15.5228 0 10ZM14.0755 5.93219C14.5272 6.25003 14.6356 6.87383 14.3178 7.32549L9.56781 14.0755C9.39314 14.3237 9.11519 14.4792 8.81226 14.4981C8.50934 14.517 8.21422 14.3973 8.01006 14.1727L5.51006 11.4227C5.13855 11.014 5.16867 10.3816 5.57733 10.0101C5.98598 9.63855 6.61843 9.66867 6.98994 10.0773L8.65042 11.9039L12.6822 6.17451C13 5.72284 13.6238 5.61436 14.0755 5.93219Z" fill="currentColor"></path></svg>
@@ -295,7 +328,7 @@
         gap: 45px;
         height: calc(100vh - 156px);
         overflow-y: scroll;
-        flex: 1;
+        width: 34%;
 
         &--message {
           display: flex;;

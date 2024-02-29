@@ -30,7 +30,6 @@
   const logout = () => authStore.setLogout()
 
   onMounted(() => {
-    chatsStore.setChats()
   })
   onUnmounted(() => {
     chatsStore.chat = null
