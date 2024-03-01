@@ -8,7 +8,11 @@
   const dialogVisible = ref(false)
   const agent = ref({})
 
-  const agents = computed(() => settingsStore.agents )
+  const agents = computed(() => {
+    const clonedAgents = [...settingsStore.agents]
+    clonedAgents.sort((a, b) => a.agents_definition_params.meta.order - b.agents_definition_params.meta.order)
+    return clonedAgents
+  })
 
   const handleOpenAgent = (item) => {
     dialogVisible.value = true
@@ -56,12 +60,18 @@
         <p>Here you can discover available agents</p>
       </div>
 
-      <div class="agents">
+      <div class="agents wide-grid">
         <div class="agents__item" v-for="agent in agents" :key="agent.id" @click="handleOpenAgent(agent)">
+          <div class="agents__item-logo">
+            <img :src="agent.agents_definition_params.meta.image_path" v-if="agent.agents_definition_params.meta.image_path">
+          </div>
+
           <h3 class="agents__item-title">{{ agent.agent_name }}</h3>
           <h4 class="agents__item-subtitle">{{ agent.agents_definition_params.meta.short_desc }}</h4>
 
           <div class="agents__item-integration" v-html="agent.agents_definition_params.meta.comment"></div>
+
+          <div class="agents__item-status" :class="agent.role"></div>
         </div>
       </div>
 

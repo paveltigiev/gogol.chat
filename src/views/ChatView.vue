@@ -98,10 +98,11 @@
     if (active_chat) {
       showChat(active_chat)
     } else {
-      // settingsStore.agent = agents.value[0]
-      // messages.splice(0, messages.length)
-      // dashboardStore.code = ''
-      console.log('обновился чат, но там пусто. надо что-то делать')
+      dashboardStore.code = ''
+      messages.splice(0, messages.length)
+      await settingsStore.setAgent(4)
+      userMessage.value = 'What can you do?'
+      sendMessage()
     }
     userMessage.value = ''
   })

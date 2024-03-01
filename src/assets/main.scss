@@ -286,14 +286,12 @@ h3 {
         border: 0;
         cursor: pointer;
         display: flex;
+        align-items: center;
         font-size: 18px;
         font-weight: 600;
-        flex: 1;
-        justify-content: space-between;
         line-height: 1.6em;
         padding: 0;
         margin: 0 0.5em;
-        display: none;
       }
     }
     &-nav {
@@ -555,8 +553,13 @@ h3 {
 }
 
 .agents {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: 30px;
+
+  &.wide-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
 
   &__item {
     display: block;
@@ -565,17 +568,39 @@ h3 {
     border: 1px solid #D1D1D1;
     border-radius: 7px;
     padding: 20px;
-    width: 33%;
     cursor: pointer;
 
-    &::before {
+    &-logo {
       content: '';
       position: absolute;
-      top: 15px;
-      right: 15px;
-      width: 38px;
-      height: 38px;
-      background: url('./img/info.svg') right 0 no-repeat;
+      top: 14px;
+      right: 14px;
+      width: 35px;
+      height: 35px;
+
+      img {
+        min-width: 100%;
+      }
+    }
+
+    &-status {
+      content: '';
+      position: absolute;
+      bottom: 14px;
+      right: 14px;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+
+      &.preview {
+        background: #D9D9D9;
+      }
+      &.read {
+        background: #56FF52;
+      }
+      &.full {
+        background: #FFC580;
+      }
     }
 
     &-title {

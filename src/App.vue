@@ -25,8 +25,6 @@ onMounted(async () => {
   })
 
   if (session.value) userStore.setUser(session.value.user.id)
-
-  console.log(import.meta.env)
 })
 </script>
 
