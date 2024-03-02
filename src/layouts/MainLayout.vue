@@ -1,5 +1,5 @@
 <script setup>
-  import { ref, computed, onMounted, onUnmounted } from 'vue';
+  import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
   import { useChatsStore } from '../stores/chatsModule'
   import { useDashboardStore } from '../stores/dashboard'
   import { useCommonsStore } from '../stores/commons'
@@ -13,7 +13,11 @@
   const authStore = useAuthStore()
 
   const overlay = computed(() => commonsStore.overlay)
-  const chats = computed(() => chatsStore.chats.reverse())
+  const chats = computed(() => chatsStore.chats)
+  const chats_desc = computed(() => {
+    const clonedChats = [...chats.value]
+    return clonedChats.reverse()
+  })
   const chat = computed(() => chatsStore.chat )
   const user = computed(() => userStore.user )
 
@@ -26,7 +30,10 @@
   }
 
   const changeChat = (id) => chatsStore.setChat(id)
-  const newChat = () => chatsStore.chat = null
+  const newChat = () => {
+    changeChat(chats.value[0].id)
+    chatsStore.chat = null
+  }
   const logout = () => authStore.setLogout()
 
   onMounted(() => {
@@ -56,7 +63,7 @@
           </div>
           <div class="main__sidebar-nav">
             <router-link
-              v-for="cht in chats"
+              v-for="cht in chats_desc"
               :key="cht.id"
               @click="changeChat(cht.id)"
               class="main__sidebar-nav--link"

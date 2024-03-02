@@ -98,11 +98,12 @@
     if (active_chat) {
       showChat(active_chat)
     } else {
-      dashboardStore.code = ''
-      messages.splice(0, messages.length)
-      await settingsStore.setAgent(4)
-      userMessage.value = 'What can you do?'
-      sendMessage()
+
+      // dashboardStore.code = ''
+      // messages.splice(0, messages.length)
+      // await settingsStore.setAgent(4)
+      // userMessage.value = 'What can you do?'
+      // sendMessage()
     }
     userMessage.value = ''
   })

@@ -7,8 +7,17 @@ export const useChatsStore = defineStore('chats', () => {
   const chat = ref(null)
   const suggestations = ref([])
 
+  const watchChats = async () => {
+    const isNewChat = chats.value.some(chat => chat.name === 'new chat')
+    if (isNewChat) {
+      chats.value = await getChats()
+      setTimeout(watchChats, 5000)
+    }
+  }
+
   const setChats = async () => {
     chats.value = await getChats()
+    watchChats()
   }
 
   const setSuggestations = async () => {
