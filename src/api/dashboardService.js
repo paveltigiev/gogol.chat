@@ -1,18 +1,7 @@
 import axios from 'axios'
 import { supabase } from '@/supabase'
 
-export async function getCode(chat_id, callback) {
-  try {
-    const { data: html_gen } = await supabase
-      .from('html_gen')
-      .select('*')
-      .eq('chat_id', chat_id)
-      // .single()
-    return html_gen[html_gen.length-1].html
-  } catch(error) {
-    console.error(error)
-  }
-
+export async function subscribe(chat_id, callback) {
   const uiChannel = supabase
     .channel('schema-db-changes')
     .on(
@@ -28,6 +17,18 @@ export async function getCode(chat_id, callback) {
       }
     )
     .subscribe()
+}
+export async function getCode(chat_id) {
+  try {
+    const { data: html_gen } = await supabase
+      .from('html_gen')
+      .select('*')
+      .eq('chat_id', chat_id)
+      // .single()
+    return html_gen[html_gen.length-1].html
+  } catch(error) {
+    console.error(error)
+  }
 }
 
 export async function getDashboard(url) {
