@@ -98,7 +98,6 @@
     if (active_chat) {
       showChat(active_chat)
     } else {
-
       // dashboardStore.code = ''
       // messages.splice(0, messages.length)
       // await settingsStore.setAgent(4)
@@ -106,6 +105,35 @@
       // sendMessage()
     }
     userMessage.value = ''
+  })
+
+  watch(code, () => {
+    setTimeout(() => {
+      var links = document.querySelectorAll('.agents__item')
+      links.forEach(function(link) {
+        link.addEventListener('click', function(event) {
+          event.preventDefault()
+
+          const url = new URL(link.href)
+          const searchParams = url.searchParams
+          const agentId = searchParams.get('agent_id')
+          const message = searchParams.get('q')
+
+          if (agentId & !message) {
+            settingsStore.setAgent(agentId)
+            chatsStore.setSuggestations()
+            chatsStore.chat = null
+            dashboardStore.code = ''
+            messages.splice(0, messages.length)
+          }
+
+          if (message) {
+            userMessage.value = message
+            sendMessage()
+          }
+        })
+      })
+    }, 100)
   })
 
   onMounted( async () => {
