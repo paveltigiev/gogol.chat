@@ -3,12 +3,12 @@ import { supabase } from '@/supabase'
 
 export async function getCode(chat_id, callback) {
   try {
-    const { data: html } = await supabase
+    const { data: html_gen } = await supabase
       .from('html_gen')
       .select('*')
       .eq('chat_id', chat_id)
-      .single()
-    return html.html
+      // .single()
+    return html_gen[html_gen.length-1].html
   } catch(error) {
     console.error(error)
   }

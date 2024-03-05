@@ -119,6 +119,13 @@
       await settingsStore.setAgent(agentId)
     }
 
+    if (params.has('q')) {
+      const message = params.get('g')
+      userMessage.value = message
+      await settingsStore.setAgent(4)
+      sendMessage()
+    }
+
     // если задан чат, задаем агента и отображаем историю чата
     if (chat.value) {
       showChat(chat.value)
