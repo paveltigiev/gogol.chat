@@ -113,6 +113,7 @@
       links.forEach(function(link) {
         link.addEventListener('click', function(event) {
           event.preventDefault()
+          console.log('click preventDefault')
 
           const url = new URL(link.href)
           const searchParams = url.searchParams
@@ -120,6 +121,7 @@
           const message = searchParams.get('q')
 
           if (agentId & !message) {
+            console.log('new chat with agent')
             settingsStore.setAgent(agentId)
             chatsStore.setSuggestations()
             chatsStore.chat = null
@@ -128,6 +130,7 @@
           }
 
           if (message) {
+            console.log('send message')
             userMessage.value = message
             sendMessage()
           }
