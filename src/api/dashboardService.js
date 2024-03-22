@@ -13,7 +13,7 @@ export async function subscribe(chat_id, callback) {
         filter: `chat_id=eq.${chat_id}`,
       },
       (payload) => {
-        callback(payload.new.html)
+        callback(payload.new)
       }
     )
     .subscribe()
@@ -25,7 +25,7 @@ export async function getCode(chat_id) {
       .select('*')
       .eq('chat_id', chat_id)
       // .single()
-    return html_gen[html_gen.length-1].html
+    return html_gen[html_gen.length-1]
   } catch(error) {
     console.error(error)
   }

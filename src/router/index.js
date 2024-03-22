@@ -13,7 +13,24 @@ const router = createRouter({
         {
           path: '/chat',
           name: 'chat',
-          component: () => import('../views/ChatView.vue')
+          component: () => import('../views/ChatView.vue'),
+          children: [
+            {
+              path: '/chat/managers',
+              name: 'managers',
+              component: () => import('../views/calls/ManagersView.vue')
+            },
+            {
+              path: '/chat/calls/:id',
+              name: 'calls',
+              component: () => import('../views/calls/CallsView.vue')
+            },
+            {
+              path: '/chat/call/:id',
+              name: 'call',
+              component: () => import('../views/calls/CallView.vue')
+            },
+          ]
         },
         {
           path: '/templates',
@@ -54,6 +71,21 @@ const router = createRouter({
           path: '/tpl7',
           name: 'tpl7',
           component: () => import('../templates/Tpl7.vue')
+        },
+        {
+          path: '/tpl01',
+          name: 'tpl10',
+          component: () => import('../templates/Tpl01.vue')
+        },
+        {
+          path: '/tpl02',
+          name: 'tpl02',
+          component: () => import('../templates/Tpl02.vue')
+        },
+        {
+          path: '/tpl03',
+          name: 'tpl03',
+          component: () => import('../templates/Tpl03.vue')
         },
       ]
     },

@@ -664,6 +664,32 @@
   .flex-end {
     justify-content: flex-end
   }
+  .text-green {
+    color: #57943A;
+  }
+  .text-red {
+    color: #FF0000;
+  }
+  .text-bold {
+    font-weight: bold;
+  }
+  &__calls-param {
+    margin-top: 35px;
+
+    &--title {
+      font-size: 26px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+    &--list {
+      padding: 0 0 0 25px;
+    }
+    &--talk {
+      p {
+        margin-bottom: 10px;
+      }
+    }
+  }
 }
 
 .alert {

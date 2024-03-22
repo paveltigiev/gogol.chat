@@ -27,6 +27,7 @@
   const chat = computed(() => chatsStore.chat)
   const loading = computed(() => commonsStore.loading)
   const code = computed(() => dashboardStore.code)
+  const request = computed(() => dashboardStore.request)
   const user = computed(() => userStore.user)
   const chatAvailable = computed(() => user.value.balance > 0)
 
@@ -140,6 +141,7 @@
   })
 
   onMounted( async () => {
+
     // await settingsStore.setAgents()
     await chatsStore.setChats()
 
@@ -205,11 +207,17 @@
     <div class="chat-box__data">
 
       <div class="chat-box__data-dashboard">
-        <div class="chat-box__data-dashboard--sceleton" v-if="code == '' && !commonsStore.loading">
+        <div class="chat-box__data-dashboard--data" v-html="code"></div>
+
+        <div class="chat-box__data-dashboard--data">
+          <router-view></router-view>
+        </div>
+
+        <!-- <div class="chat-box__data-dashboard--sceleton" v-if="code == '' && !commonsStore.loading">
           <img src="../assets/img/sceleton.png">
         </div>
         <div class="chat-box__data-dashboard--data" v-html="code" v-if="!commonsStore.loading"></div>
-        <div class="loading" v-else></div>
+        <div class="loading" v-else></div> -->
       </div>
 
       <div class="chat-box__data-messages" id="messageContainer" v-if="messages.length > 0">
@@ -276,6 +284,7 @@
       cursor: pointer;
       display: flex;
       border-radius: 12px;
+      display: none;
 
       span {
         color: #666;
